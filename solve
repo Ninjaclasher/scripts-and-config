@@ -8,14 +8,6 @@ from codeutil import *
 
 PATH = os.getcwd() + "/"
 
-templates = {
-    "c++":      "#include <bits/stdc++.h>\\n\\nusing namespace std;\\n\\nint main()\\n{{\\n\\n}}\\n",
-    "c":        "#include <stdio.h>\\n\\nint main(){{\\n}}\\n",
-    "gas":      "",
-    "java":     "import java.io.*;\\nimport java.util.*;\\n\\npublic class {}\\n{{\\n    public static void main(String[] args)\\n    {{\\n        \\n    }}\\n}}",
-    "python":   "",
-}
-
 def main():
     global ext
     global templates
