@@ -1,0 +1,1 @@
+[ $(echo -e "No\nYes" | dmenu -i -p "$1" -fn 0 -sb '#f28048') == "Yes" ] && $2

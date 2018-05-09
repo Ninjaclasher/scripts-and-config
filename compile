@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+
+from codeutil import *
+
+def main(): 
+    argl = len(sys.argv)
+    if argl < 2 or argl > 7:
+        print(sys.argv[0].split('/')[-1] + " file [--language language] [stdin file] [stdout file] [stderr file]", file=sys.stderr)
+        return 1
+    name = sys.argv[1].split('.')[0]
+    ext = sys.argv[1].split('.')[1] if len(sys.argv[1].split('.')) > 1 else ""
+    cmd = compile_command["c++"]
+    run = run_command["c++"]
+    pipe_files = 2
+    if argl > 3 and sys.argv[2] == "--language":
+        pipe_files += 2
+        try:
+            cmd = compile_command[sys.argv[3].lower()]
+            run = run_command[sys.argv[3].lower()]
+        except KeyError:
+            print ("Language " + sys.argv[3] + " is not supported.", file=sys.stderr)
+            return 2
+    else:
+        try:
+            cmd = compile_command[default_lang[ext]]
+            run = run_command[default_lang[ext]]
+        except KeyError:
+            pass
+    if cmd != "":
+        print ("\n###################\n#### COMPILING ####\n###################")
+        ret_code = os.system("time " + cmd.format(sys.argv[1], name)) 
+        if ret_code != 0:
+            print ("Compilation failed. Aborting...", file=sys.stderr)
+            return ret_code
+    print ("\n###################\n##### RUNNING #####\n###################\n")
+    run_str = "time " + run.format(sys.argv[1], name)
+    for i,j in enumerate(range(pipe_files, argl)):
+        run_str += pipe_symbol[i] + sys.argv[j]
+    ret_code = os.system(run_str)
+    return ret_code
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(1)
