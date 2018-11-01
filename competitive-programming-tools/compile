@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import sys
+
+from codeutil import *
+
+def main():
+    global ext
+    global compile_command
+    global default_lang
+    global run_command
+    parser = argparse.ArgumentParser(description="Compile files in various languages.")
+    parser.add_argument("--language", "-l", default="c++", choices=ext.keys(), help="The language to compile in.")
+    parser.add_argument("file", help="File to compile.")
+    parser.add_argument("stdin_file", nargs="?", help="Stdin file.")
+    parser.add_argument("stdout_file", nargs="?", help="Stdout file.")
+    parser.add_argument("stderr_file", nargs='?', help="Stdin file.")
+    args = parser.parse_args()
+    lang = args.language
+    name = args.file.split('.')[0]
+    ex = args.file.split('.')[1] if len(args.file.split('.')) > 1 else ""
+    cmd = compile_command[lang]
+    run = run_command[lang]
+    if not "--language" in sys.argv and not "-l" in sys.argv:
+        try:
+            cmd = compile_command[default_lang[ex]]
+            run = run_command[default_lang[ex]]
+        except KeyError:
+            pass
+    if cmd != "":
+        print ("\n###################\n#### COMPILING ####\n###################")
+        ret_code = os.system("time " + cmd.format(args.file, name))
+        if ret_code != 0:
+            print ("Compilation failed. Aborting...", file=sys.stderr)
+            return ret_code
+    print ("\n###################\n##### RUNNING #####\n###################\n")
+    run_str = "time " + run.format(args.file, name)
+    if args.stdin_file is not None:
+        run_str += pipe_symbol[0] + args.stdin_file
+    if args.stdout_file is not None:
+        run_str += pipe_symbol[1] + args.stdout_file
+    if args.stderr_file is not None:
+        run_str += pipe_symbol[2] + args.stderr_file
+    return os.system(run_str)
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(1)
