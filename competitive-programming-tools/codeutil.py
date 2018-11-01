@@ -1,6 +1,6 @@
 compile_command = {
-    "c"         : "gcc {0} -o {1}.run",
-    "c++"       : "g++ {0} -o {1}.run",
+    "c"         : "gcc -Wall -Wshadow -Wchkp -Wno-unused-result -O1 {0} -o {1}.run",
+    "c++"       : "g++ -Wall -Wshadow -Wchkp -Wno-unused-result -O1 {0} -o {1}.run",
     "gas"       : "as {0} -o tmp && ld tmp -o {1}.run && rm tmp", 
     "java"      : "javac {0}",
     "pypy"      : "",
@@ -36,13 +36,6 @@ ext = {
     "gas":      "asm",
     "java":     "java",
     "python":   "py",
-}
-templates = {
-    "c++":      "#include <bits/stdc++.h>\\n\\nusing namespace std;\\n\\nint main()\\n{{\\n\\n}}\\n",
-    "c":        "#include <stdio.h>\\n\\nint main(){{\\n}}\\n",
-    "gas":      "",
-    "java":     "import java.io.*;\\nimport java.util.*;\\n\\npublic class {}\\n{{\\n    public static void main(String[] args)\\n    {{\\n        \\n    }}\\n}}",
-    "python":   "",
 }
 pipe_symbol = [" < "," > ", " 2> "]
 

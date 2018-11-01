@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+import argparse
+import math
+import os
+import sys
+
+from codeutil import *
+
+PATH = os.path.dirname(os.path.realpath(__file__))
+GENERATOR_FILENAME = "generator.cpp"
+
+template_files = os.path.join(PATH, "templates")
+
+def main():
+    global ext
+    parser = argparse.ArgumentParser(description="Turing compiler")
+    parser.add_argument("--language", "-l", default="c++", choices=ext.keys(), help="The language to be used.")
+    parser.add_argument("--generator", "-g", default=0, const=1, action="store_const", help="Include a generator template for generating test data.")
+    parser.add_argument("problem_name", help="The problem name to be used when generating the files.")
+    args = parser.parse_args()
+    name = args.problem_name
+    if name[-1] == '/':
+        name = name[:-1]
+    lang = args.language
+    include_generator = args.generator
+    
+    to_create = ["{0}.{1}".format(name, x) for x in [ext[lang], "in", "out", "err"]]
+    
+    if include_generator:
+        if GENERATOR_FILENAME in os.listdir(template_files):
+            to_create.append(GENERATOR_FILENAME)
+        else:
+            print("The generator file \"{}\" does not exist.".format(GENERATOR_FILENAME), file=sys.stderr)
+            return 1
+    
+    try:
+        os.mkdir(name)
+        os.chdir(name)
+        os.system("touch " + " ".join(to_create))
+        if include_generator:
+            os.system("cp {0} {1}".format(os.path.join(template_files, GENERATOR_FILENAME), GENERATOR_FILENAME))
+        if lang in os.listdir(template_files):
+            os.system("cp {0} {1}".format(os.path.join(template_files, lang), to_create[0]))
+        os.system("sed -i \"s/__FILE_NAME/{0}/g\" *".format(name))
+    except FileExistsError:
+        os.chdir(name)
+    os.system("nvim -p " + " ".join(to_create))
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(1)
