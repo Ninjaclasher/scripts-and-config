@@ -16,14 +16,15 @@
 ###################################################################
 
 import argparse
+import os
 import sys
 
 parser = argparse.ArgumentParser(description="Generates the init.yml file for DMOJ problems.")
-parser.add_argument("problem_code")
 parser.add_argument("num_batches", type=int)
+parser.add_argument("problem_code", nargs="?", default=os.path.split(os.getcwd())[-1], help="The problem code. If none is provided, it uses the current directory name.")
 parser.add_argument("--include-previous", "-i", action="store_const", default=0, const=1, help="Include all previous batches in the current batch.")
 parser.add_argument("--checker", "-c", nargs=1, help="The custom checker for the problem (if there is one).")
-parser.add_argument("--pretests", "-p", nargs=1, type=int, default=0, help="The number of pretests.")
+parser.add_argument("--pretests", "-p", nargs=1, type=int, default=[0], help="The number of pretests.")
 args = parser.parse_args()
 
 problem_code = args.problem_code
@@ -34,31 +35,51 @@ if num_pretests is not None:
 include_prev = args.include_previous
 checker = args.checker
 
+class Batch:
+    def __init__(self, case_lines, points):
+        self.cases = case_lines
+        self.points = points
+
+    @property
+    def batch_start(self):
+        return ["- batched:"]
+
+    @property
+    def batch_cases(self):
+        return self.cases
+
+    @property
+    def batch_end(self):
+        return ["  points: {0}".format(self.points)]
+
 with open("init.yml", "w") as f:
     f.write("archive: {0}.zip\n".format(problem_code))
     if checker is not None:
         f.write("checker: {}\n".format(checker[0]))
-    if num_pretests is not None:
+    if num_pretests > 0:
         f.write("pretest_test_cases:\n")
         for i in range(num_pretests):
             f.write("- &id{0:03} {{in: cases/{0}.in, out: cases/{0}.out, points: 0}}\n".format(i))
 
     f.write("test_cases:\n")
-    if num_pretests is not None:
+    if num_pretests > 0:
         for i in range(num_pretests):
             f.write("- *id{0:03}\n".format(i))
-    previous = []
+    batches = []
+    
     for i in range(num_batches):
         print("Enter batch start, batch end, number of points:", end=" ", flush=True)
-        batch_start, batch_end, number_points = map(int, sys.stdin.readline().split())
-        f.write("- batched:\n")
-        if include_prev:
-            for x in previous:
-                f.write(x)
-        
+        batch_start, batch_end, number_points = map(int, sys.stdin.readline().strip().split())
+        cases = []
         for j in range(batch_start, batch_end+1):
-            line = "  - {{in: cases/batch{0}/{1}.in, out: cases/batch{0}/{1}.out}}\n".format(i+1, j)
-            f.write(line)
-            if include_prev:
-                previous.append(line)
-        f.write("  points: {0}\n".format(number_points))
+            cases.append("  - {{in: cases/batch{0}/{1}.in, out: cases/batch{0}/{1}.out}}".format(i+1, j))
+        batches.append(Batch(cases, number_points))
+
+    for i in range(num_batches):
+        cur = batches[i]
+        f.write("\n".join(cur.batch_start) + "\n")
+        f.write("\n".join(cur.batch_cases) + "\n")
+        if include_prev:
+            for j in range(i):
+                f.write("\n".join(batches[j].batch_cases) + "\n")
+        f.write("\n".join(cur.batch_end) + "\n")
