@@ -23,6 +23,7 @@ parser = argparse.ArgumentParser(description="Generates the init.yml file for DM
 parser.add_argument("num_batches", type=int)
 parser.add_argument("problem_code", nargs="?", default=os.path.split(os.getcwd())[-1], help="The problem code. If none is provided, it uses the current directory name.")
 parser.add_argument("--include-previous", "-i", action="store_const", default=0, const=1, help="Include all previous batches in the current batch.")
+parser.add_argument("--no-output", "-n", action="store_const", default=0, const=1, help="Whether test cases (excluding pretests) should have an output file.")
 parser.add_argument("--checker", "-c", nargs=1, help="The custom checker for the problem (if there is one).")
 parser.add_argument("--pretests", "-p", nargs=1, type=int, default=[0], help="The number of pretests.")
 args = parser.parse_args()
@@ -33,6 +34,7 @@ num_pretests = args.pretests
 if num_pretests is not None:
     num_pretests = num_pretests[0]
 include_prev = args.include_previous
+no_output = args.no_output
 checker = args.checker
 
 class Batch:
@@ -55,7 +57,18 @@ class Batch:
 with open("init.yml", "w") as f:
     f.write("archive: {0}.zip\n".format(problem_code))
     if checker is not None:
-        f.write("checker: {}\n".format(checker[0]))
+        checker = checker[0]
+        if checker == "floats":
+            print("Enter precision of checker (Default: 5):", end=" ", flush=True)
+            precision = input().strip() or "5"
+            output = """\
+checker:
+  args: {{precision: {prec}}}
+  name: floats
+""".format(prec=precision)
+            f.write(output)
+        else:
+            f.write("checker: {}\n".format(checker))
     if num_pretests > 0:
         f.write("pretest_test_cases:\n")
         for i in range(num_pretests):
@@ -72,7 +85,10 @@ with open("init.yml", "w") as f:
         batch_start, batch_end, number_points = map(int, sys.stdin.readline().strip().split())
         cases = []
         for j in range(batch_start, batch_end+1):
-            cases.append("  - {{in: cases/batch{0}/{1}.in, out: cases/batch{0}/{1}.out}}".format(i+1, j))
+            format_str = "  - {{in: cases/batch{0}/{1}.in, out: cases/batch{0}/{1}.out}}"
+            if no_output:
+                format_str = "  - {{in: cases/batch{0}/{1}.in}}"
+            cases.append(format_str.format(i+1, j))
         batches.append(Batch(cases, number_points))
 
     for i in range(num_batches):
