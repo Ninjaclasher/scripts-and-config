@@ -7,12 +7,24 @@
 ## - Format                                                      ##
 ##      - All test cases must be in a directory called `cases/`  ##
 ##      - Batched test cases should be in a subdirectory in      ##
-##        `cases/` called `batch*/` where * is in integer.       ##
+##        `cases/` called `batch*/` where * is an integer.       ##
 ##            e.g `cases/batch1/`                                ##
 ##            - The test cases should be named *.in and *.out    ##
 ##              for input/output respectively.                   ##
-##      - Pretests should be in the `cases/` directory.          ##
-##           e.g `cases/0.in` for input                          ##
+##      - Pretests/samples should be in the `cases/` directory.  ##
+##           e.g `cases/0.in` for input.                         ##
+## - Command Line Arguments                                      ##
+##      - `--include-previous`                                   ##
+##          - Include previous batch cases in the current batch. ##
+##      - `--no-output`                                          ##
+##          - Only input files in the test data.                 ##
+##      - `--checker`                                            ##
+##          - Pass in a custom checker file.                     ##
+##          - Passing in "floats" allows adding a builtin        ##
+##            float-precision checker.                           ##
+##      - `--pretests`                                           ##
+##          - Pass in the number of sample cases                 ##
+##          - Should be stored in directly in `cases/`           ##
 ###################################################################
 
 import argparse
@@ -84,7 +96,7 @@ checker:
         print("Enter batch start, batch end, number of points:", end=" ", flush=True)
         batch_start, batch_end, number_points = map(int, sys.stdin.readline().strip().split())
         cases = []
-        for j in range(batch_start, batch_end+1):
+        for j in range(batch_start, batch_end+1): 
             format_str = "  - {{in: cases/batch{0}/{1}.in, out: cases/batch{0}/{1}.out}}"
             if no_output:
                 format_str = "  - {{in: cases/batch{0}/{1}.in}}"
