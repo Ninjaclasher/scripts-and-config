@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+
+class Server:
+    def __init__(self, hostname, address, user, port=22, identity='~/.ssh/id_rsa'):
+        self.hostname = hostname
+        self.address = address
+        self.port = port
+        self.identity = identity
+        self.user = user
+
+    def format(self, location):
+        return '{0}@{1}:{2}'.format(self.user, self.address, location.lstrip(self.hostname + ':'))
+
+servers = {}
+
+def scp(source, destination):
+    if ':' in source:
+        source = servers[source.split(':')[0]].format(source)
+    if ':' in destination:
+        destination_server = servers[destination.split(':')[0]]
+        port = destination_server.port
+        identity = destination_server.identity
+        destination = destination_server.format(destination)
+    else:
+        port = 22
+        identity = '~/.ssh/id_rsa'
+    os.system('scp -r -i {identity} -P {port} {source} {destination}'.format(identity=identity, port=port, source=source, destination=destination))
+
+
+with open(os.environ['HOME'] + '/.ssh/config', 'r') as f:
+    for x in f.read().split('\n\n'):
+        ser = x.split()[1::2]
+        servers[ser[0]] = Server(*ser)
+
+
+def check_server(location):
+    if ':' in location and location.split(':')[0] not in servers:
+        raise argparse.ArgumentTypeError('Unknown hostname "{}"'.format(location.split(':')[0]))
+    return location
+
+
+parser = argparse.ArgumentParser(description='SCP Wrapper')
+parser.add_argument('source', help='The source file.', type=check_server)
+parser.add_argument('destination', help='The destination.', type=check_server)
+
+args = parser.parse_args()
+scp(args.source.replace(' ', '\\ '), args.destination.replace(' ', '\\ '))
