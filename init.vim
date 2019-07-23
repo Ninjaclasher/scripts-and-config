@@ -1,20 +1,10 @@
 " put this line first in ~/.vimrc
 set nocompatible | filetype indent plugin on | syn on
 
-fun! SetupVAM()
-  let c = get(g:, 'vim_addon_manager', {})
-  let g:vim_addon_manager = c
-  let c.plugin_root_dir = expand('$HOME', 1) . '/.vim/vim-addons'
-  let &rtp.=(empty(&rtp)?'':',').c.plugin_root_dir.'/vim-addon-manager'
-  if !isdirectory(c.plugin_root_dir.'/vim-addon-manager/autoload')
-    execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '
-        \       shellescape(c.plugin_root_dir.'/vim-addon-manager', 1)
-  endif
-  call vam#ActivateAddons([], {})
-endfun
-call SetupVAM()
-call vam#ActivateAddons(['lh-brackets'], {})
-
+call plug#begin()
+Plug 'LucHermitte/lh-brackets'
+Plug 'LucHermitte/lh-vim-lib'
+call plug#end()
 
 map         <C-Right>       :tabn<Cr>
 map!        <C-Right>       <Esc>:tabn<Cr>a
@@ -37,6 +27,8 @@ vmap        <C-x>           "+d<Cr>
 map         <C-v>           "+p<Right>
 map!        <C-v>           <Esc>"+pa<Right>
 map         <Bs>            <del>
+tmap        <Bs>            <C-u>
+
 map         <C-S-Up>        ddkP
 map!        <C-S-Up>        <Esc>ddkPa
 map         <C-S-Down>      ddp
@@ -47,13 +39,18 @@ map!        <F11>           <Esc>:-tab split<Cr>:te compile %:t %:t:r.in %:t:r.o
 map         <F10>           <Esc>:-tab split<Cr>:te compile %:t<Cr>i
 map!        <F10>           <Esc>:-tab split<Cr>:te compile %:t<Cr>i
 
+map         <F8>            <Esc>:set number<Cr>:set relativenumber<Cr>i
+map!        <F8>            <Esc>:set number<Cr>:set relativenumber<Cr>i
+
 set         whichwrap+=<,>,[,],h,l
 set         tabstop=4
 set         shiftwidth=4
 set         expandtab
 set         autoread
 set         nomodeline
-au          FocusGained,BufEnter * :checktime
+set         background=light
 "set        number
+"set        mouse=a
+au          FocusGained,BufEnter * :checktime
 
 let         g:usemarks=0
