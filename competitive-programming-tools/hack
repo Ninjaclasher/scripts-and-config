@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import sys
+
+from subprocess import Popen, PIPE
+
+
+in_ext = 'in'
+out_ext = 'out'
+hacks_dir = 'hacks'
+cases_dir = 'cases'
+
+
+def remove_dir(directory):
+    os.system('rm -r {} >/dev/null 2>/dev/null'.format(directory))
+
+
+def main():
+    for directory in [hacks_dir, cases_dir]:
+        if os.path.exists(directory):
+            path_type = 'file' if os.path.isfile(directory) else 'directory'
+            print('Warning: {type} "{dir}" exists, which will be overwritten. '
+                  'Please delete the {type} manually first.'.format(dir=directory, type=path_type))
+            return 1
+
+    remove_dir(hacks_dir)
+    os.mkdir(hacks_dir)
+    parser = argparse.ArgumentParser(description='Solution hacker.')
+    parser.add_argument('generator', help='Generator executable file.')
+    parser.add_argument('solutionsdir', help='Directory containing solutions.')
+    parser.add_argument('iterations', nargs='?', default=1, type=int, help='Number of iterations.')
+    parser.add_argument('--time-limit', '-tl', default=2, type=float,
+                            help='The time limit for the solutions in seconds. '
+                                 'Decimals are supported. Default is 2 seconds.')
+    parser.add_argument('--memory-limit', '-ml', default=65536, type=int,
+                            help='The memory limit for the solutions in kilobytes. '
+                                 'Decimals are NOT supported. Default is 65536 kilobytes.')
+    args = parser.parse_args()
+
+    generator = args.generator
+    solutions = [os.path.join(args.solutionsdir, solution)
+                    for solution in os.listdir(args.solutionsdir)]
+    time_limit = args.time_limit
+    memory_limit = args.memory_limit
+    case_count = 0
+
+    def process_cases(output):
+        nonlocal case_count
+        if output == '':
+            return False
+        cases = output.split('\n')
+        for case in cases:
+            filename = case.split(':')[0].strip()
+            for ext in [in_ext, out_ext]:
+                os.rename('{file}.{ext}'.format(file=filename, ext=ext),
+                          os.path.join(hacks_dir, '{case}.{ext}'.format(case=case_count, ext=ext)))
+            case_count += 1
+        return True
+
+    def run_test():
+        nonlocal solutions
+        os.system('./{exe}'.format(exe=generator))
+
+        hacked_solutions = set()
+
+        for solution in solutions:
+            flags = ['--no-ansi', '--full-paths', '--no-summary',
+                     '--no-resource-usage', '--exclude-verdicts', 'AC']
+            p = Popen(['judge', cases_dir, str(time_limit), '{}K'.format(memory_limit),  solution] + flags,
+                      stdout=PIPE, stderr=PIPE, stdin=PIPE)
+            if process_cases(p.stdout.read().decode('utf-8').strip()):
+                print('HACKED {solution}'.format(solution=solution))
+                hacked_solutions.add(solution)
+            p.communicate()
+        remove_dir(cases_dir)
+
+        solutions = (list(set(solutions) - hacked_solutions))
+
+    for i in range(args.iterations):
+        print('Running test {iteration}'.format(iteration=i + 1))
+        run_test()
+
+    print('Generated {cases} hack cases.'.format(cases=case_count))
+    return 0
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(1)
