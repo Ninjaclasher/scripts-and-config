@@ -18,15 +18,6 @@ def remove_dir(directory):
 
 
 def main():
-    for directory in [hacks_dir, cases_dir]:
-        if os.path.exists(directory):
-            path_type = 'file' if os.path.isfile(directory) else 'directory'
-            print('Warning: {type} "{dir}" exists, which will be overwritten. '
-                  'Please delete the {type} manually first.'.format(dir=directory, type=path_type))
-            return 1
-
-    remove_dir(hacks_dir)
-    os.mkdir(hacks_dir)
     parser = argparse.ArgumentParser(description='Solution hacker.')
     parser.add_argument('generator', help='Generator executable file.')
     parser.add_argument('solutionsdir', help='Directory containing solutions.')
@@ -37,6 +28,9 @@ def main():
     parser.add_argument('--memory-limit', '-ml', default=65536, type=int,
                             help='The memory limit for the solutions in kilobytes. '
                                  'Decimals are NOT supported. Default is 65536 kilobytes.')
+    parser.add_argument('--include-hacked', action='store_const', default=0, const=1,
+                            help='If a solution is hacked, continue testing it on further cases.')
+    parser.add_argument('--checker', '-c', default='standard', help='The checker to use for judging a solution.')
     args = parser.parse_args()
 
     generator = args.generator
@@ -44,7 +38,21 @@ def main():
                     for solution in os.listdir(args.solutionsdir)]
     time_limit = args.time_limit
     memory_limit = args.memory_limit
+    checker = args.checker
+    include_hacked = args.include_hacked
     case_count = 0
+
+    for directory in [hacks_dir, cases_dir]:
+        if os.path.exists(directory):
+            path_type = 'file' if os.path.isfile(directory) else 'directory'
+            print('Warning: {type} "{dir}" exists, which will be overwritten. '
+                  'The {type} will be deleted.'.format(dir=directory, type=path_type))
+            if input('Do you wish to proceed? [Y/n] ') == 'n':
+                return 1
+
+    remove_dir(hacks_dir)
+    remove_dir(cases_dir)
+    os.mkdir(hacks_dir)
 
     def process_cases(output):
         nonlocal case_count
@@ -61,6 +69,7 @@ def main():
 
     def run_test():
         nonlocal solutions
+        nonlocal include_hacked
         os.system('./{exe}'.format(exe=generator))
 
         hacked_solutions = set()
@@ -68,7 +77,7 @@ def main():
         for solution in solutions:
             flags = ['--no-ansi', '--full-paths', '--no-summary',
                      '--no-resource-usage', '--exclude-verdicts', 'AC']
-            p = Popen(['judge', cases_dir, str(time_limit), '{}K'.format(memory_limit),  solution] + flags,
+            p = Popen(['judge', cases_dir, str(time_limit), '{}K'.format(memory_limit),  solution, checker] + flags,
                       stdout=PIPE, stderr=PIPE, stdin=PIPE)
             if process_cases(p.stdout.read().decode('utf-8').strip()):
                 print('HACKED {solution}'.format(solution=solution))
@@ -76,10 +85,11 @@ def main():
             p.communicate()
         remove_dir(cases_dir)
 
-        solutions = (list(set(solutions) - hacked_solutions))
+        if not include_hacked:
+            solutions = list(set(solutions) - hacked_solutions)
 
     for i in range(args.iterations):
-        print('Running test {iteration}'.format(iteration=i + 1))
+        print('Running test {iteration}'.format(iteration=i+1))
         run_test()
 
     print('Generated {cases} hack cases.'.format(cases=case_count))
