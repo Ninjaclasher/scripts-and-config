@@ -1,6 +1,6 @@
 compile_command = {
-    "c"         : "gcc -Wall -Wshadow -Wchkp -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run",
-    "c++"       : "g++ -Wall -Wshadow -Wchkp -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run",
+    "c"         : "gcc -Wall -Wshadow -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run",
+    "c++"       : "g++ -Wall -Wshadow -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run",
     "gas"       : "as {0} -o tmp && ld tmp -o {1}.run && rm tmp", 
     "java"      : "javac {0}",
     "pypy"      : "",
@@ -31,11 +31,11 @@ default_lang = {
     "pypy"      : "pypy",
 }
 ext = {
-    "c++":      "cpp",
-    "c":        "c",
-    "gas":      "asm",
-    "java":     "java",
-    "python":   "py",
+    "c++"       : "cpp",
+    "c"         : "c",
+    "gas"       : "asm",
+    "java"      : "java",
+    "python"    : "py",
 }
 pipe_symbol = [" < "," > ", " 2> "]
 
