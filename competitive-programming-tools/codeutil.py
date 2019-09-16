@@ -1,6 +1,6 @@
 compile_command = {
-    "c"         : "gcc -Wall -Wshadow -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run",
-    "c++"       : "g++ -Wall -Wshadow -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run",
+    "c"         : "gcc -fmax-errors=3 -Wall -Wshadow -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run",
+    "c++"       : "g++ -fmax-errors=3 -Wall -Wshadow -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run",
     "gas"       : "as {0} -o tmp && ld tmp -o {1}.run && rm tmp", 
     "java"      : "javac {0}",
     "pypy"      : "",
