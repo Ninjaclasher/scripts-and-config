@@ -1,67 +1,78 @@
 #!/usr/bin/env python3
 
 import argparse
-import math
 import os
 import sys
 
 from codeutil import *
 
-PATH = os.path.dirname(os.path.realpath(__file__))
-GENERATOR_PREFIX = "generator."
-GENERATOR_TYPES = ["cpp" ,"py"]
-CHECKER_FILENAME = "check.py"
 
-template_files = os.path.join(PATH, "templates")
+PATH = os.path.dirname(os.path.realpath(__file__))
+template_files = os.path.join(PATH, 'templates')
+
+GENERATOR_PREFIX = 'generator'
+GENERATOR_TYPES = [extension.lstrip('.')
+                   for filename, extension in map(os.path.splitext, os.listdir(template_files))
+                   if filename == GENERATOR_PREFIX]
+CHECKER_FILENAME = 'check.py'
+
 
 def main():
     global ext
-    parser = argparse.ArgumentParser(description="Turing compiler")
-    parser.add_argument("--language", "-l", default="c++", choices=ext.keys(), help="The language to be used.")
-    parser.add_argument("--generator", "-g", choices=GENERATOR_TYPES, help="Include a generator template for generating test data.")
-    parser.add_argument('--checker', "-c", default=0, const=1, action="store_const", help="Include a custom checker template")
-    parser.add_argument("problem_name", help="The problem name to be used when generating the files.")
+    parser = argparse.ArgumentParser(description='Solve script')
+    parser.add_argument('--language', '-l', default='c++', choices=ext.keys(), help='The language to be used.')
+    parser.add_argument('--generator', '-g', choices=GENERATOR_TYPES,
+                        help='Include a generator template for generating test data.')
+    parser.add_argument('--checker', '-c', default=0, const=1, action='store_const',
+                        help='Include a custom checker template')
+    parser.add_argument('problem_name', help='The problem name to be used when generating the files.')
     args = parser.parse_args()
-    name = args.problem_name
-    if name[-1] == '/':
-        name = name[:-1]
+    name = args.problem_name.rstrip('/')
     lang = args.language
     generator = args.generator
     include_checker = args.checker
 
-    to_create = ["{0}.{1}".format(name, x) for x in [ext[lang], "in", "out", "err"]]
+    if name in os.listdir():
+        for filename, extension in map(os.path.splitext, os.listdir(name)):
+            extension = extension.lstrip('.')
+            if filename == name and extension in ext.values():
+                lang = default_lang[extension]
+
+    to_create = ['{0}.{1}'.format(name, x) for x in [ext[lang], 'in', 'out', 'err']]
 
     if generator:
-        generator = GENERATOR_PREFIX + generator
+        generator = '{filename}.{ext}'.format(filename=GENERATOR_PREFIX, ext=generator)
         if generator in os.listdir(template_files):
             to_create.append(generator)
         else:
-            print("The generator file \"{}\" does not exist.".format(generator), file=sys.stderr)
+            print('The generator file "{}" does not exist.'.format(generator), file=sys.stderr)
             return 1
-    
+
     if include_checker:
         if CHECKER_FILENAME in os.listdir(template_files):
             to_create.append(CHECKER_FILENAME)
         else:
-            print("The checker file \"{}\" does not exist".format(CHECKER_FILENAME), file=sys.stderr)
+            print('The checker file "{}" does not exist'.format(CHECKER_FILENAME), file=sys.stderr)
             return 1
 
     try:
         os.mkdir(name)
-        os.chdir(name)
-        os.system("touch " + " ".join(to_create))
-        if generator:
-            os.system("cp {0} {1}".format(os.path.join(template_files, generator), generator))
-        if include_checker:
-            os.system("cp {0} {1}".format(os.path.join(template_files, CHECKER_FILENAME), CHECKER_FILENAME))
-        if lang in os.listdir(template_files):
-            os.system("cp {0} {1}".format(os.path.join(template_files, lang), to_create[0]))
-        os.system("sed -i \"s/__FILE_NAME/{0}/g\" *".format(name))
     except FileExistsError:
         os.chdir(name)
-    os.system("nvim -p " + " ".join(to_create))
+    else:
+        os.chdir(name)
+        os.system('touch ' + ' '.join(to_create))
+        if generator:
+            os.system('cp {0} {1}'.format(os.path.join(template_files, generator), generator))
+        if include_checker:
+            os.system('cp {0} {1}'.format(os.path.join(template_files, CHECKER_FILENAME), CHECKER_FILENAME))
+        if lang in os.listdir(template_files):
+            os.system('cp {0} {1}'.format(os.path.join(template_files, lang), to_create[0]))
+        os.system('sed -i "s/__FILE_NAME/{0}/g" *'.format(name))
+    os.system('nvim -p ' + ' '.join(to_create))
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     try:
         sys.exit(main())
     except KeyboardInterrupt:
