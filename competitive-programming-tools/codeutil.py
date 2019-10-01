@@ -9,6 +9,7 @@ compile_command = {
     'python'    : '',
     'python2'   : '',
     'python3'   : '',
+    'haskell'   : 'ghc --make -dynamic {0} -o {1}.run'
 }
 run_command = {
     'c'         : './{1}.run',
@@ -21,6 +22,7 @@ run_command = {
     'python'    : 'python {0}',
     'python2'   : 'python2 {0}',
     'python3'   : 'python3 {0}',
+    'haskell'   : './{1}.run',
 }
 default_lang = {
     'cpp'       : 'c++',
@@ -29,6 +31,7 @@ default_lang = {
     'java'      : 'java',
     'py'        : 'python',
     'pypy'      : 'pypy',
+    'hs'        : 'haskell',
 }
 ext = {
     'c++'       : 'cpp',
@@ -37,5 +40,6 @@ ext = {
     'java'      : 'java',
     'python'    : 'py',
     'pypy'      : 'pypy',
+    'haskell'   : 'hs',
 }
 pipe_symbol = [' < ', ' > ', ' 2> ']
