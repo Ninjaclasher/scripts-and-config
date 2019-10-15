@@ -6,49 +6,49 @@ import sys
 
 from codeutil import *
 
+
 def main():
     global ext
     global compile_command
     global default_lang
     global run_command
-    parser = argparse.ArgumentParser(description="Compile files in various languages.")
-    parser.add_argument("--language", "-l", default="c++", choices=ext.keys(), help="The language to compile in.")
-    parser.add_argument("--compile-only", "-c", default=0, const=1, action="store_const", help="Only compile the file.")
-    parser.add_argument("file", help="File to compile.")
-    parser.add_argument("stdin_file", nargs="?", help="Stdin file.")
-    parser.add_argument("stdout_file", nargs="?", help="Stdout file.")
-    parser.add_argument("stderr_file", nargs='?', help="Stdin file.")
+    parser = argparse.ArgumentParser(description='Compile files in various languages.')
+    parser.add_argument('--language', '-l', default='c++', choices=ext.keys(), help='The language to compile in.')
+    parser.add_argument('--compile-only', '-c', default=0, const=1, action='store_const', help='Only compile the file.')
+    parser.add_argument('file', help='File to compile.')
+    parser.add_argument('stdin_file', nargs='?', help='Stdin file.')
+    parser.add_argument('stdout_file', nargs='?', help='Stdout file.')
+    parser.add_argument('stderr_file', nargs='?', help='Stdin file.')
     args = parser.parse_args()
     lang = args.language
-    name = args.file.split('.')[0]
-    ex = args.file.split('.')[1] if len(args.file.split('.')) > 1 else ""
+    name, ex = os.path.splitext(args.file)
+    ex = ex.lstrip('.')
+
     cmd = compile_command[lang]
     run = run_command[lang]
-    if not "--language" in sys.argv and not "-l" in sys.argv:
+    if '--language' not in sys.argv and '-l' not in sys.argv:
         try:
             cmd = compile_command[default_lang[ex]]
             run = run_command[default_lang[ex]]
         except KeyError:
             pass
-    if cmd != "":
-        print ("\n###################\n#### COMPILING ####\n###################")
-        ret_code = os.system("time " + cmd.format(args.file, name))
+    if cmd != '':
+        print('\n###################\n#### COMPILING ####\n###################')
+        ret_code = os.system('time ' + cmd.format(args.file, name))
         if ret_code != 0:
-            print ("Compilation failed. Aborting...", file=sys.stderr)
+            print('Compilation failed. Aborting...', file=sys.stderr)
             return ret_code
     if args.compile_only:
         return 0
-    print ("\n###################\n##### RUNNING #####\n###################\n")
-    run_str = "time " + run.format(args.file, name)
-    if args.stdin_file is not None:
-        run_str += pipe_symbol[0] + args.stdin_file
-    if args.stdout_file is not None:
-        run_str += pipe_symbol[1] + args.stdout_file
-    if args.stderr_file is not None:
-        run_str += pipe_symbol[2] + args.stderr_file
+    print('\n###################\n##### RUNNING #####\n###################\n')
+    run_str = 'time ' + run.format(args.file, name)
+    for filename, pipe in zip([args.stdin_file, args.stdout_file, args.stderr_file], pipe_symbol):
+        if filename is not None:
+            run_str += pipe + filename
     return os.system(run_str)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     try:
         sys.exit(main())
     except KeyboardInterrupt:
