@@ -12,7 +12,7 @@ class Server:
         self.user = user
 
     def format(self, location):
-        return '{0}@{1}:{2}'.format(self.user, self.address, location.lstrip(self.hostname + ':'))
+        return '{0}@{1}:{2}'.format(self.user, self.address, location.split(self.hostname + ':', 1)[-1])
 
 servers = {}
 
