@@ -26,9 +26,9 @@ def set_constraints(self):
     ## Write main constraints here ##
     self.N = Constraint(1, 10**3)
     self.ee = GraphGenerator()
-    self.E = Constraint(1, 1, self.ee.next_edge)
+    self.E = Constraint(generator=self.ee.next_edge)
 
-def generate_input(self):
+def generate_input(self, **kwargs):
     ## Write generator here ##
     n = self.N.next
     yield n
@@ -44,7 +44,8 @@ conf = """
 - batch: 1
   constraints: {}
   cases:
-    - {}
+    - constraints: {}
+      repeat: 1
 """
 
 p = ConstraintParser(data=conf)
