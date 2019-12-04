@@ -76,7 +76,9 @@ def main():
     def run_test():
         nonlocal solutions
         nonlocal include_hacked
-        os.system('./{exe}'.format(exe=generator))
+        returncode = os.system('./{exe}'.format(exe=generator))
+        if returncode:
+            return returncode
 
         hacked_solutions = set()
 
@@ -89,6 +91,8 @@ def main():
                 print('HACKED {solution}'.format(solution=solution))
                 hacked_solutions.add(solution)
             p.communicate()
+            if p.returncode:
+                return p.returncode
         remove_dir(cases_dir)
 
         if not include_hacked:
