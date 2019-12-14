@@ -6,20 +6,25 @@ import random
 import sys
 import time
 
+
 def RGBHex(RGB):
-    return "#" + ''.join(hex(x).split('x')[-1].rjust(2,'0') for x in RGB)
+    return "#" + ''.join(hex(x).split('x')[-1].rjust(2, '0') for x in RGB)
+
 
 delay = 1 if len(sys.argv) == 1 else int(sys.argv[1])/1000.0
 
-cur = [random.randint(0,255) for x in range(3)]
+
+cur = [random.randint(0, 255) for x in range(3)]
 cur_col = Color(RGBHex(cur))
+
+
 while True:
-    nex = [random.randint(0,255) for x in range(3)]
+    nex = [random.randint(0, 255) for x in range(3)]
     nex_col = Color(RGBHex(nex))
-    num_iter = sum(abs(nex[x]-cur[x]) for x in range(3))//random.randint(1,5)
-    run = list(cur_col.range_to(nex_col,num_iter))
-    for x in map(str,run):
-        os.system("xsetroot -solid \"" + x + "\"")
-        print ("Current colour: " + x)
+    num_iter = sum(abs(nex[x]-cur[x]) for x in range(3)) // random.randint(1, 4)
+    run = list(cur_col.range_to(nex_col, num_iter))
+    for x in map(str, run):
+        os.system('xsetroot -solid "{}"'.format(x))
+        print('Current colour: {}'.format(x))
         time.sleep(delay)
-    cur,cur_col = nex,nex_col
+    cur, cur_col = nex, nex_col
