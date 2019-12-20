@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import sys
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Problem renaming script')
+    parser.add_argument('--skip-file-contents', '-s', default=False, action='store_true',
+                        help='Do not rename anything inside of files')
+    parser.add_argument('old_name', help='Old problem name')
+    parser.add_argument('new_name', help='New problem name')
+    args = parser.parse_args()
+    old_name = args.old_name.rstrip('/')
+    new_name = args.new_name.rstrip('/')
+
+    for filename in os.listdir():
+        name, ext = os.path.splitext(filename)
+        if name == old_name:
+            os.rename(filename, new_name + ext)
+
+    if not args.skip_file_contents:
+        os.system('sed -i "s/{old_name}/{new_name}/g" *'.format(old_name=old_name, new_name=new_name))
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(1)
