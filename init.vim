@@ -2,8 +2,13 @@
 set nocompatible | filetype indent plugin on | syn on
 
 call plug#begin()
+Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 Plug 'LucHermitte/lh-brackets'
 Plug 'LucHermitte/lh-vim-lib'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'mbbill/undotree'
+Plug 'tpope/vim-fugitive'
 call plug#end()
 
 map         <C-Right>       :tabn<Cr>
@@ -34,10 +39,10 @@ map!        <C-S-Up>        <Esc>ddkPa
 map         <C-S-Down>      ddp
 map!        <C-S-Down>      <Esc>ddpa
 
-map         <F11>           <Esc>:-tab split<Cr>:te compile %:t %:t:r.in %:t:r.out %:t:r.err<Cr>i
-map!        <F11>           <Esc>:-tab split<Cr>:te compile %:t %:t:r.in %:t:r.out %:t:r.err<Cr>i
-map         <F10>           <Esc>:-tab split<Cr>:te compile %:t<Cr>i
-map!        <F10>           <Esc>:-tab split<Cr>:te compile %:t<Cr>i
+map         <F11>           <Esc>:-tab split<Cr>:te compile % %:r.in %:r.out %:r.err<Cr>i
+map!        <F11>           <Esc>:-tab split<Cr>:te compile % %:r.in %:r.out %:r.err<Cr>i
+map         <F10>           <Esc>:-tab split<Cr>:te compile %<Cr>i
+map!        <F10>           <Esc>:-tab split<Cr>:te compile %<Cr>i
 
 map         <F8>            <Esc>:set number<Cr>:set relativenumber<Cr>i
 map!        <F8>            <Esc>:set number<Cr>:set relativenumber<Cr>i
@@ -54,3 +59,9 @@ set         background=light
 au          FocusGained,BufEnter * :checktime
 
 let         g:usemarks=0
+
+let g:instant_markdown_slow=1
+let g:instant_markdown_autostart=0
+let g:instant_markdown_mathjax=1
+
+let g:airline_theme='onedark'
