@@ -1,7 +1,11 @@
 # requires <https://github.com/Ninjaclasher/testcase-generator>
 import random
 
-from testcase_generator import Constraint, Case, Batch, Generator, ConstraintParser, GraphGenerator
+from testcase_generator import (
+    BaseConstraint, BoundedConstraint, NoArgumentConstraint, CustomGeneratorConstraint,
+    Case, Batch, Generator, ConstraintParser,
+    GraphGenerator, StringGenerator
+)
 
 """
  | initialize(self, N, graph_type, *args, **kwargs)
@@ -24,15 +28,14 @@ from testcase_generator import Constraint, Case, Batch, Generator, ConstraintPar
 
 def set_constraints(self):
     ## Write main constraints here ##
-    self.N = Constraint(1, 10**3)
-    self.ee = GraphGenerator()
-    self.E = Constraint(generator=self.ee.next_edge)
+    self.N = BoundedConstraint(1, 10**3)
+    self.E = CustomGeneratorConstraint(generator=GraphGenerator())
 
 def generate_input(self, **kwargs):
     ## Write generator here ##
     n = self.N.next
     yield n
-    self.ee.initialize(n, 11)
+    self.E.initialize(n, 11)
     for i in range(n-1):
         yield self.E.next
 
