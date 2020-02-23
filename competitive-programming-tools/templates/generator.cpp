@@ -21,6 +21,6 @@ int main()
         out.open(file + ".in");
 
         out.close();
-        system(("./__FILE_NAME.run < " + file + ".in > " + file + ".out").c_str());
+        system(("__RUN_COMMAND < " + file + ".in > " + file + ".out").c_str());
     }
 }

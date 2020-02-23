@@ -56,4 +56,4 @@ p.parse()
 
 batches = p.batches
 
-Generator(batches=batches, exe="./__FILE_NAME.run").start()
+Generator(batches=batches, exe="__RUN_COMMAND").start()

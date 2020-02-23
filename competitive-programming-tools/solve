@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--language', '-l', default='c++', choices=ext.keys(), help='The language to be used.')
     parser.add_argument('--generator', '-g', choices=GENERATOR_TYPES,
                         help='Include a generator template for generating test data.')
-    parser.add_argument('--checker', '-c', default=0, const=1, action='store_const',
+    parser.add_argument('--checker', '-c', action='store_true',
                         help='Include a custom checker template')
     parser.add_argument('problem_name', help='The problem name to be used when generating the files.')
     args = parser.parse_args()
@@ -68,9 +68,12 @@ def main():
             os.system('cp {0} {1}'.format(os.path.join(template_files, CHECKER_FILENAME), CHECKER_FILENAME))
         if lang in os.listdir(template_files):
             os.system('cp {0} {1}'.format(os.path.join(template_files, lang), to_create[0]))
+
+        run_cmd = run_command[lang].format(to_create[0], name)
+
+        os.system('sed -i "s/__RUN_COMMAND/{0}/g" *'.format(run_cmd.replace('/', '\\/')))
         os.system('sed -i "s/__FILE_NAME/{0}/g" *'.format(name))
     os.system('nvim -p ' + ' '.join(to_create))
-
 
 if __name__ == '__main__':
     try:
