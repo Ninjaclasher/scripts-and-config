@@ -4,32 +4,32 @@ import random
 from testcase_generator import (
     BaseConstraint, BoundedConstraint, NoArgumentConstraint, CustomGeneratorConstraint,
     Case, Batch, Generator, ConstraintParser,
-    GraphGenerator, StringGenerator
+    GraphGenerator, StringGenerator,
 )
 
 """
- | initialize(self, N, graph_type, *args, **kwargs)
- |     N: number of nodes
- |     graph_type:
- |              1: normal graph
- |              2: connected graph
- |              3: complete graph
- |              4: circle
- |              10: line
- |              11: normal tree
- |              12: tree, all nodes connected to one node
- |              13: caterpillar tree
- |              14: binary tree
- |     kwargs:
- |         M: number of edges, leave blank if it is a tree
- |         duplicates: allow for duplicate edges between nodes
- |         self_loops: allow for edges between the same node
+ |  __init__(self, N, type, *args, **kwargs)
+ |      N: a BoundedConstraint object or an integer for the number of nodes
+ |      type:
+ |               1: normal graph
+ |               2: connected graph
+ |               3: complete graph
+ |               4: circle
+ |               10: line
+ |               11: normal tree
+ |               12: tree, all nodes connected to one node
+ |               13: caterpillar tree
+ |               14: binary tree
+ |      kwargs:
+ |          M: number of edges, leave blank if it is a tree
+ |          duplicates: allow for duplicate edges between nodes
+ |          self_loops: allow for edges between the same node
 """
 
 def set_constraints(self):
     ## Write main constraints here ##
     self.N = BoundedConstraint(1, 10**3)
-    self.E = CustomGeneratorConstraint(generator=GraphGenerator())
+    self.E = CustomGeneratorConstraint(generator=GraphGenerator)
 
 def generate_input(self, **kwargs):
     ## Write generator here ##
