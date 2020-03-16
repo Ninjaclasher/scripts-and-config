@@ -2,7 +2,7 @@
 import random
 
 from testcase_generator import (
-    BaseConstraint, BoundedConstraint, NoArgumentConstraint, CustomGeneratorConstraint,
+    BaseConstraint, BoundedConstraint, ChoiceConstraint, NoArgumentConstraint, CustomGeneratorConstraint,
     Case, Batch, Generator, ConstraintParser,
     GraphGenerator, StringGenerator,
 )
