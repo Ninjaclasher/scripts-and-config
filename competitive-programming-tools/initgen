@@ -1,113 +1,176 @@
 #!/usr/bin/python3
 
-###################################################################
-##                    init.yml file generator                    ##
-## - This script generates the init.yml for DMOJ (dmoj.ca)       ##
-##   problems.                                                   ##
-## - Format                                                      ##
-##      - All test cases must be in a directory called `cases/`  ##
-##      - Batched test cases should be in a subdirectory in      ##
-##        `cases/` called `batch*/` where * is an integer.       ##
-##            e.g `cases/batch1/`                                ##
-##            - The test cases should be named *.in and *.out    ##
-##              for input/output respectively.                   ##
-##      - Pretests/samples should be in the `cases/` directory.  ##
-##           e.g `cases/0.in` for input.                         ##
-## - Command Line Arguments                                      ##
-##      - `--include-previous`                                   ##
-##          - Include previous batch cases in the current batch. ##
-##      - `--no-output`                                          ##
-##          - Only input files in the test data.                 ##
-##      - `--checker`                                            ##
-##          - Pass in a custom checker file.                     ##
-##          - Passing in "floats" allows adding a builtin        ##
-##            float-precision checker.                           ##
-##      - `--pretests`                                           ##
-##          - Pass in the number of sample cases                 ##
-##          - Should be stored in directly in `cases/`           ##
-###################################################################
+#################################################################
+#           requires <https://github.com/yaml/pyyaml>           #
+#################################################################
+
+#################################################################
+#                    init.yml file generator                    #
+# - This script generates the init.yml for DMOJ (dmoj.ca)       #
+#   problems.                                                   #
+# - Format                                                      #
+#      - All test cases must be in a directory called `cases/`  #
+#      - Batched test cases should be in a subdirectory in      #
+#        `cases/` called `batch*/` where * is an integer.       #
+#            e.g `cases/batch1/`                                #
+#            - The test cases should be named *.in and *.out    #
+#              for input/output respectively.                   #
+#      - Samples should be directly in the `cases/` directory.  #
+#           e.g `cases/0.in` for input.                         #
+# - Command Line Arguments                                      #
+#      - `--include-previous`                                   #
+#          - Include previous batch cases in the current batch. #
+#      - `--no-input`                                           #
+#          - No input files in the test data.                   #
+#      - `--no-output`                                          #
+#          - No output files in the test data.                  #
+#      - `--checker`                                            #
+#          - Pass in a custom checker file.                     #
+#          - Passing in 'floats' allows adding a builtin        #
+#            float-precision checker.                           #
+#      - `--judge`                                              #
+#          - Pass in a custom judge file.                       #
+#      - `--samples`                                            #
+#          - Pass in the number of sample cases                 #
+#          - Should be stored in directly in `cases/`           #
+#################################################################
 
 import argparse
 import os
 import sys
+import yaml
 
-parser = argparse.ArgumentParser(description="Generates the init.yml file for DMOJ problems.")
-parser.add_argument("num_batches", type=int)
-parser.add_argument("problem_code", nargs="?", default=os.path.split(os.getcwd())[-1], help="The problem code. If none is provided, it uses the current directory name.")
-parser.add_argument("--include-previous", "-i", action="store_const", default=0, const=1, help="Include all previous batches in the current batch.")
-parser.add_argument("--no-output", "-n", action="store_const", default=0, const=1, help="Whether test cases (excluding pretests) should have an output file.")
-parser.add_argument("--checker", "-c", nargs=1, help="The custom checker for the problem (if there is one).")
-parser.add_argument("--pretests", "-p", nargs=1, type=int, default=[0], help="The number of pretests.")
-args = parser.parse_args()
-
-problem_code = args.problem_code
-num_batches = args.num_batches
-num_pretests = args.pretests
-if num_pretests is not None:
-    num_pretests = num_pretests[0]
-include_prev = args.include_previous
-no_output = args.no_output
-checker = args.checker
 
 class Batch:
-    def __init__(self, case_lines, points):
-        self.cases = case_lines
+    def __init__(self, cases, points):
+        self.cases = cases
         self.points = points
 
-    @property
-    def batch_start(self):
-        return ["- batched:"]
 
-    @property
-    def batch_cases(self):
-        return self.cases
+def handle_floats_args():
+    precision = int(input('Enter precision of checker (Default: 5): ').strip() or '5')
+    return {'precision': precision}
 
-    @property
-    def batch_end(self):
-        return ["  points: {0}".format(self.points)]
 
-with open("init.yml", "w") as f:
-    f.write("archive: {0}.zip\n".format(problem_code))
+def main():
+    parser = argparse.ArgumentParser(description='Generates the init.yml file for DMOJ problems.')
+    parser.add_argument('num_batches', type=int)
+    parser.add_argument('problem_code', nargs='?', default=os.path.basename(os.getcwd()),
+                        help='The problem code. If none is provided, it uses the current directory name.')
+    parser.add_argument('--include-previous', '-i', action='store_true', default=False,
+                        help='Include all previous batches in the current batch.')
+    parser.add_argument('--no-input', action='store_true', default=False,
+                        help='Whether test cases (excluding samples) should have an input file.')
+    parser.add_argument('--no-output', action='store_true', default=False,
+                        help='Whether test cases (excluding samples) should have an output file.')
+    parser.add_argument('--checker', '-c', nargs=1, help='The custom checker for the problem (if there is one).')
+    parser.add_argument('--judge', '-j', nargs=1, help='The custom grader for the problem (if there is one).')
+    parser.add_argument('--samples', '-p', nargs=1, type=int, default=[0], help='The number of samples.')
+    args = parser.parse_args()
+
+    problem_code = args.problem_code
+    num_batches = args.num_batches
+    num_samples = args.samples
+    if num_samples is not None:
+        num_samples = num_samples[0]
+    include_prev = args.include_previous
+    checker = args.checker
+    custom_judge = args.judge
+
+    config = {
+        'archive': '{0}.zip'.format(problem_code)
+    }
+
+    checker_handlers = {
+        'floats': handle_floats_args,
+        'floatsabs': handle_floats_args,
+        'floatsrel': handle_floats_args,
+    }
     if checker is not None:
         checker = checker[0]
-        if checker == "floats":
-            print("Enter precision of checker (Default: 5):", end=" ", flush=True)
-            precision = input().strip() or "5"
-            output = """\
-checker:
-  args: {{precision: {prec}}}
-  name: floats
-""".format(prec=precision)
-            f.write(output)
-        else:
-            f.write("checker: {}\n".format(checker))
-    if num_pretests > 0:
-        f.write("pretest_test_cases:\n")
-        for i in range(num_pretests):
-            f.write("- &id{0:03} {{in: cases/{0}.in, out: cases/{0}.out, points: 0}}\n".format(i))
+        try:
+            config['checker'] = {
+                'name': checker,
+                'args': checker_handlers[checker](),
+            }
+        except KeyError:
+            config['checker'] = checker
 
-    f.write("test_cases:\n")
-    if num_pretests > 0:
-        for i in range(num_pretests):
-            f.write("- *id{0:03}\n".format(i))
+    if custom_judge is not None:
+        config['custom_judge'] = custom_judge[0]
+
+    pretest_test_cases = []
+    test_cases = []
+    samples = []
+
+    if num_samples > 0:
+        for i in range(num_samples):
+            samples.append({
+                'in': 'cases/{0}.in'.format(i),
+                'out': 'cases/{0}.out'.format(i),
+                'points': 0,
+            })
+
+    pretest_batches = []
     batches = []
-    
-    for i in range(num_batches):
-        print("Enter batch start, batch end, number of points:", end=" ", flush=True)
-        batch_start, batch_end, number_points = map(int, sys.stdin.readline().strip().split())
-        cases = []
-        for j in range(batch_start, batch_end+1): 
-            format_str = "  - {{in: cases/batch{0}/{1}.in, out: cases/batch{0}/{1}.out}}"
-            if no_output:
-                format_str = "  - {{in: cases/batch{0}/{1}.in}}"
-            cases.append(format_str.format(i+1, j))
-        batches.append(Batch(cases, number_points))
 
     for i in range(num_batches):
-        cur = batches[i]
-        f.write("\n".join(cur.batch_start) + "\n")
-        f.write("\n".join(cur.batch_cases) + "\n")
+        print('Enter batch start, batch end, number of points, [pretest batch start, pretest batch end]:',
+              end=' ', flush=True)
+        batch_args = list(map(int, sys.stdin.readline().strip().split()))
+        if len(batch_args) == 5:
+            batch_start, batch_end, number_points, pretest_batch_start, pretest_batch_end = batch_args
+        else:
+            batch_start, batch_end, number_points = batch_args
+            pretest_batch_start, pretest_batch_end = 0, -1
+
+        pretest_cases = []
+        cases = []
+
+        for j in range(batch_start, batch_end+1):
+            case = {
+                'in': 'cases/batch{0}/{1}.in'.format(i+1, j),
+                'out': 'cases/batch{0}/{1}.out'.format(i+1, j),
+            }
+            if args.no_input:
+                del case['in']
+            if args.no_output:
+                del case['out']
+            cases.append(case)
+            if pretest_batch_start <= j <= pretest_batch_end:
+                pretest_cases.append(case)
+
+        batches.append(Batch(cases, number_points))
+        pretest_batches.append(Batch(pretest_cases, number_points))
+
+    def get_batch(i, batch_list):
+        cases = batch_list[i].cases
         if include_prev:
             for j in range(i):
-                f.write("\n".join(batches[j].batch_cases) + "\n")
-        f.write("\n".join(cur.batch_end) + "\n")
+                cases.extend(batch_list[j].cases)
+        if not cases:
+            raise ValueError('Empty batch')
+        return {
+            'batched': cases,
+            'points': batch_list[i].points,
+        }
+
+    for i in range(num_batches):
+        test_cases.append(get_batch(i, batches))
+        try:
+            pretest_test_cases.append(get_batch(i, pretest_batches))
+        except ValueError:
+            pass
+    config['test_cases'] = samples + test_cases
+    if pretest_test_cases:
+        config['pretest_test_cases'] = samples + pretest_test_cases
+
+    with open('init.yml', 'w') as f:
+        yaml.dump(config, f, default_flow_style=None)
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(1)
