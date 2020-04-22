@@ -41,7 +41,7 @@ set $home                           /home/evanzhang/
 #### Resize Mode ####
 #####################
 
-mode "resize" 
+mode "resize"
 {
     ## These bindings trigger as soon as you enter the resize mode ##
 
@@ -196,25 +196,27 @@ bindsym Ctrl+Mod1+Mod4+Shift+8      move container to workspace $ws18
 bindsym Ctrl+Mod1+Mod4+Shift+9      move container to workspace $ws19
 bindsym Ctrl+Mod1+Mod4+Shift+0      move container to workspace $ws20
 
-######################
-#### i3bar Config ####
-######################
+###########################
+#### Status bar Config ####
+###########################
 
-bar 
-{
-    status_command python3 $home/.config/i3/i3status.py
-    position top
-    colors 
-    {
-        focused_workspace           #f28048 #f77433 #000000
-        urgent_workspace            #fc3f3f #f22e2e #ffffff
-        inactive_workspace          #333333 #2e2e2e #ffffff
+#bar
+#{
+#    status_command python3 $home/.config/i3/i3status.py
+#    position top
+#    colors
+#    {
+#        focused_workspace           #f28048 #f77433 #000000
+#        urgent_workspace            #fc3f3f #f22e2e #ffffff
+#        inactive_workspace          #333333 #2e2e2e #ffffff
+#
+#        background                  #131313
+#    }
+#
+#    font pango:DejaVu Sans Mono 11
+#}
 
-        background                  #131313
-    }
-
-    font pango:DejaVu Sans Mono 11
-}
+exec_always --no-startup-id $home/.config/polybar/launch.sh
 
 client.focused                      #f79c6f #f28f5e #000000
 client.unfocused                    #353535 #2e2e2e #ffffff
