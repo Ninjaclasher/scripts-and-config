@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import shutil
 import sys
 
 from codeutil import *
@@ -9,50 +10,80 @@ from codeutil import *
 
 PATH = os.path.dirname(os.path.realpath(__file__))
 template_files = os.path.join(PATH, 'templates')
+TEMPLATES = os.listdir(template_files)
+
+
+def get_types(prefix):
+    return [
+        default_lang.get(extension.lstrip('.'), extension.lstrip('.'))
+        for filename, extension in map(os.path.splitext, TEMPLATES)
+        if filename == prefix
+    ]
+
+
+def get_filename(prefix, lang):
+    return '{filename}.{ext}'.format(filename=prefix, ext=ext[lang])
+
 
 GENERATOR_PREFIX = 'generator'
-GENERATOR_TYPES = [extension.lstrip('.')
-                   for filename, extension in map(os.path.splitext, os.listdir(template_files))
-                   if filename == GENERATOR_PREFIX]
-CHECKER_FILENAME = 'check.py'
+GENERATOR_TYPES = get_types(GENERATOR_PREFIX)
+TEMPLATE_PREFIX = 'template'
+TEMPLATE_TYPES = ext.keys()
+CHECKER_PREFIX = 'check'
+CHECKER_TYPES = get_types(CHECKER_PREFIX)
 
 
 def main():
     global ext
     parser = argparse.ArgumentParser(description='Solve script')
-    parser.add_argument('--language', '-l', default='c++', choices=ext.keys(), help='The language to be used.')
-    parser.add_argument('--generator', '-g', choices=GENERATOR_TYPES,
-                        help='Include a generator template for generating test data.')
-    parser.add_argument('--checker', '-c', action='store_true',
-                        help='Include a custom checker template')
+    parser.add_argument(
+        '--language',
+        '-l',
+        default='c++' if 'c++' in TEMPLATE_TYPES else TEMPLATE_TYPES[0],
+        choices=TEMPLATE_TYPES,
+        help='The language to be used.',
+    )
+    parser.add_argument(
+        '--generator',
+        '-g',
+        choices=GENERATOR_TYPES,
+        help='Include a generator template for generating test data.',
+    )
+    parser.add_argument(
+        '--checker',
+        '-c',
+        choices=CHECKER_TYPES,
+        help='Include a custom checker template',
+    )
     parser.add_argument('problem_name', help='The problem name to be used when generating the files.')
     args = parser.parse_args()
     name = args.problem_name.rstrip('/')
     lang = args.language
     generator = args.generator
-    include_checker = args.checker
+    checker = args.checker
 
     if name in os.listdir():
         for filename, extension in map(os.path.splitext, os.listdir(name)):
             extension = extension.lstrip('.')
-            if filename == name and extension in ext.values():
+            if filename == name and extension in TEMPLATE_TYPES:
                 lang = default_lang[extension]
 
     to_create = ['{0}.{1}'.format(name, x) for x in [ext[lang], 'in', 'out', 'err']]
 
     if generator:
-        generator = '{filename}.{ext}'.format(filename=GENERATOR_PREFIX, ext=generator)
-        if generator in os.listdir(template_files):
+        generator = get_filename(GENERATOR_PREFIX, generator)
+        if generator in TEMPLATES:
             to_create.append(generator)
         else:
             print('The generator file "{}" does not exist.'.format(generator), file=sys.stderr)
             return 1
 
-    if include_checker:
-        if CHECKER_FILENAME in os.listdir(template_files):
-            to_create.append(CHECKER_FILENAME)
+    if checker:
+        checker = get_filename(CHECKER_PREFIX, checker)
+        if checker in TEMPLATES:
+            to_create.append(checker)
         else:
-            print('The checker file "{}" does not exist'.format(CHECKER_FILENAME), file=sys.stderr)
+            print('The checker file "{}" does not exist'.format(checker), file=sys.stderr)
             return 1
 
     try:
@@ -63,11 +94,13 @@ def main():
         os.chdir(name)
         os.system('touch ' + ' '.join(to_create))
         if generator:
-            os.system('cp {0} {1}'.format(os.path.join(template_files, generator), generator))
-        if include_checker:
-            os.system('cp {0} {1}'.format(os.path.join(template_files, CHECKER_FILENAME), CHECKER_FILENAME))
-        if lang in os.listdir(template_files):
-            os.system('cp {0} {1}'.format(os.path.join(template_files, lang), to_create[0]))
+            shutil.copyfile(os.path.join(template_files, generator), generator)
+        if checker:
+            shutil.copyfile(os.path.join(template_files, checker), checker)
+
+        template = get_filename(TEMPLATE_PREFIX, lang)
+        if template in TEMPLATES:
+            shutil.copyfile(os.path.join(template_files, template), to_create[0])
 
         run_cmd = run_command[lang].format(to_create[0], name)
 

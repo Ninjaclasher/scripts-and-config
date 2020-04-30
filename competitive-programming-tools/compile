@@ -14,7 +14,7 @@ def main():
     global run_command
     parser = argparse.ArgumentParser(description='Compile files in various languages.')
     parser.add_argument('--language', '-l', default='c++', choices=ext.keys(), help='The language to compile in.')
-    parser.add_argument('--compile-only', '-c', default=0, const=1, action='store_const', help='Only compile the file.')
+    parser.add_argument('--compile-only', '-c', action='store_true', help='Only compile the file.')
     parser.add_argument('file', help='File to compile.')
     parser.add_argument('stdin_file', nargs='?', help='Stdin file.')
     parser.add_argument('stdout_file', nargs='?', help='Stdout file.')
