@@ -4,7 +4,7 @@ import argparse
 import os
 
 class Server:
-    def __init__(self, hostname, address, user, port=22, identity='~/.ssh/id_rsa'):
+    def __init__(self, hostname, address, user, port, identity):
         self.hostname = hostname
         self.address = address
         self.port = port
@@ -27,13 +27,32 @@ def scp(source, destination):
     else:
         port = 22
         identity = '~/.ssh/id_rsa'
-    os.system('scp -r -i {identity} -P {port} {source} {destination}'.format(identity=identity, port=port, source=source, destination=destination))
+    os.system(
+        'scp -r -i {identity} -P {port} {source} {destination}'.format(
+            identity=identity,
+            port=port,
+            source=source,
+            destination=destination
+        )
+    )
 
 
 with open(os.environ['HOME'] + '/.ssh/config', 'r') as f:
-    for x in f.read().split('\n\n'):
-        ser = x.split()[1::2]
-        servers[ser[0]] = Server(*ser)
+    for x in f.read().strip().split('\n\n'):
+        settings = {
+            'port': 22,
+            'identity': '~/.ssh/id_rsa',
+        }
+        for y in x.strip().split('\n'):
+            key, value = y.split()
+            settings[key.lower()] = value
+        servers[settings['host']] = Server(
+            hostname=settings['host'],
+            address=settings['hostname'],
+            user=settings['user'],
+            port=settings['port'],
+            identity=settings['identity'],
+        )
 
 
 def check_server(location):
