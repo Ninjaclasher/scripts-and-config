@@ -64,9 +64,9 @@ def main():
 
     if name in os.listdir():
         for filename, extension in map(os.path.splitext, os.listdir(name)):
-            extension = extension.lstrip('.')
+            extension = default_lang.get(extension.lstrip('.'))
             if filename == name and extension in TEMPLATE_TYPES:
-                lang = default_lang[extension]
+                lang = extension
 
     to_create = ['{0}.{1}'.format(name, x) for x in [ext[lang], 'in', 'out', 'err']]
 
