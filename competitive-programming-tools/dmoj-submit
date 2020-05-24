@@ -1,0 +1,279 @@
+#!/usr/bin/env python3
+
+################################################################
+#                 requires requests, termcolor                 #
+################################################################
+
+import argparse
+import re
+import threading
+import time
+
+import requests
+
+from termcolor import colored
+
+
+class DMOJMixin:
+    API_KEY = None
+    base_urls = {
+        'problem_submit': 'https://dmoj.ca/problem/{problem_code}/submit',
+        'submission_api': 'https://dmoj.ca/api/v2/submission/{submission_id}',
+        'submission_abort': 'https://dmoj.ca/submission/{submission_id}/abort',
+    }
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def get_headers(self):
+        return {
+            'Authorization': 'Bearer {api_key}'.format(api_key=self.API_KEY),
+        }
+
+    def make_request(self, method, *args, **kwargs):
+        kwargs['headers'] = self.get_headers()
+        return getattr(requests, method)(*args, **kwargs)
+
+    def format_ansi(self, text):
+        def format_inline(text, attrs):
+            data = attrs.split('|')
+            colors = data[0].split(',')
+            if not colors[0]:
+                colors[0] = None
+            attrs = data[1].split(',') if len(data) > 1 else []
+            return colored(text, *colors, attrs=attrs)
+
+        return re.sub(r'#ansi\[(.*?)\]\((.*?)\)', lambda x: format_inline(x.group(1), x.group(2)), text)
+
+    def echo(self, text):
+        print(text)
+
+
+class Problem(DMOJMixin):
+    def __init__(self, *args, **kwargs):
+        self.code = kwargs.pop('problem_code')
+        super().__init__(*args, **kwargs)
+
+    def submit(self, language_id, source_code):
+        url = self.make_request(
+            'post',
+            self.base_urls['problem_submit'].format(problem_code=self.code),
+            data={
+                'language': language_id,
+                'source': source_code,
+            },
+        ).url
+        submission_id = url.split('/')[-1]
+        if not submission_id.isdigit():
+            raise ValueError('Failed to submit to {problem}.'.format(problem=self.code))
+        self.echo(self.format_ansi('#ansi[Queued submission {id}](green)'.format(id=submission_id)))
+        return submission_id
+
+
+class Language(DMOJMixin):
+    KEY_ID = {
+        "ADA": 42,
+        "AWK": 43,
+        "BF": 30,
+        "C": 9,
+        "C#": 14,
+        "C++03": 2,
+        "C++11": 13,
+        "C++14": 33,
+        "C++17": 69,
+        "C11": 72,
+        "CBL": 39,
+        "COFFEE": 45,
+        "Clang": 35,
+        "Clang++": 36,
+        "D": 29,
+        "DART": 37,
+        "F#": 40,
+        "F95": 19,
+        "FORTH": 49,
+        "GAS32": 56,
+        "GAS64": 58,
+        "GO": 16,
+        "Groovy": 64,
+        "HASK": 15,
+        "ICK": 50,
+        "JAVA11": 74,
+        "JAVA8": 25,
+        "KOTLIN": 67,
+        "LUA": 22,
+        "Lisp": 70,
+        "NASM": 20,
+        "NASM64": 62,
+        "OCAML": 23,
+        "PAS": 10,
+        "PERL": 6,
+        "PHP": 5,
+        "PIKE": 68,
+        "PRO": 47,
+        "PY2": 1,
+        "PY3": 8,
+        "PYPY2": 17,
+        "PYPY3": 18,
+        "RKT": 63,
+        "RUBY2": 21,
+        "RUST": 44,
+        "SCALA": 52,
+        "SCM": 41,
+        "SED": 60,
+        "SWIFT": 54,
+        "TCL": 38,
+        "TEXT": 51,
+        "TUR": 24,
+        "V8JS": 27,
+        "VB": 34,
+    }
+
+    def __init__(self, *args, **kwargs):
+        self.key = kwargs.pop('language_key')
+        self.id = self.get_id_by_key(self.key)
+        super().__init__(*args, **kwargs)
+
+    @classmethod
+    def get_id_by_key(cls, key):
+        return cls.KEY_ID[key]
+
+
+class Submission(DMOJMixin):
+    STATUS_MAP = {
+        'P': 'Processing...',
+        'CE': 'Compile Error',
+        'IE': 'Internal Error',
+        'AB': 'Aborted',
+    }
+    PROCESSING_STATUSES = ('P',)
+    DONE_STATUSES = ('D', 'CE', 'IE', 'AB')
+
+    def __init__(self, *args, **kwargs):
+        self.id = kwargs.pop('submission_id')
+        super().__init__(*args, **kwargs)
+
+    def abort(self):
+        self.echo(self.format_ansi('#ansi[aborting...](yellow)'))
+        self.make_request('post', self.base_urls['submission_abort'].format(submission_id=self.id))
+
+    def track(self):
+        def format_status(status):
+            status_colour = {
+                'AC': 'green',
+                'RTE': 'yellow',
+                'MLE': 'yellow',
+                'OLE': 'yelow',
+                'TLE': 'white',
+                'RE': 'yellow',
+                'WA': 'red',
+            }
+            return self.format_ansi('#ansi[{status}]({colour}|bold)'.format(
+                status=status,
+                colour=status_colour.get(status, 'white'),
+            ))
+
+        def format_time(time):
+            return '{:.3f}s'.format(time)
+
+        def format_memory(memory):
+            memory_bounds = [10, 20, 30, 40, 50, 60]
+            memory_units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+            for bound, unit in zip(memory_bounds, memory_units):
+                if memory < (1 << bound):
+                    div = 1 << (bound - 10)
+                    return '{memory:.2f} {unit}'.format(memory=memory / div, unit=unit)
+            return '{memory} {unit}'.format(memory=memory, unit='B')
+
+        def format_case(**case_data):
+            status = case_data['status']
+            if status == 'SC':
+                info = '--'
+            else:
+                point_info = ' ({points}/{total})'.format(**case_data)
+                info = '{status} [{time}, {memory}]{point_info}'.format(
+                    status=format_status(status),
+                    time=format_time(case_data['time']) if status != 'TLE' else 'TLE',
+                    memory=format_memory(case_data['memory'] * 1024) if status != 'MLE' else 'MLE',
+                    point_info=point_info if case_data.get('show_points', True) else '',
+                )
+            return f"Case #{case_data['case_number']}: {info}"
+
+        has_printed_case = set()
+        has_printed_status = set()
+        submission_url = self.base_urls['submission_api'].format(submission_id=self.id)
+
+        while True:
+            data = self.make_request('get', submission_url).json()
+            submission_data = data['data']['object']
+
+            status = submission_data['status']
+            if status in self.PROCESSING_STATUSES:
+                if status not in has_printed_status:
+                    self.echo(self.STATUS_MAP[status])
+                    has_printed_status.add(status)
+
+            def print_cases(cases, padding='', show_points=True):
+                for case_number, case in enumerate(cases, 1):
+                    if case['type'] == 'case':
+                        if case['case_id'] not in has_printed_case:
+                            self.echo(padding + format_case(case_number=case_number, show_points=show_points, **case))
+                            has_printed_case.add(case['case_id'])
+                    elif case['type'] == 'batch':
+                        if len(case['cases']) > 0 and case['cases'][0]['case_id'] not in has_printed_case:
+                            self.echo('{padding}Batch #{case_number} ({points}/{total}):'.format(
+                                padding=padding,
+                                case_number=case_number,
+                                **case,
+                            ))
+                        print_cases(case['cases'], padding=padding + '  ', show_points=False)
+
+            print_cases(submission_data['cases'])
+
+            if status in self.DONE_STATUSES:
+                if status == 'D':
+                    self.echo('========================================')
+                    result = submission_data['result']
+                    submission_data['result'] = format_status(result)
+                    submission_data['time'] = format_time(submission_data['time']) if result != 'TLE' else 'TLE'
+                    submission_data['memory'] = format_memory(submission_data['memory'] * 1024) if result != 'MLE' else 'MLE'
+                    self.echo('Verdict: {result} ({case_points}/{case_total})'.format(**submission_data))
+                    self.echo('Resources: {time}, {memory}'.format(**submission_data))
+                else:
+                    self.echo(self.format_ansi('#ansi[{message}](red|bold)'.format(message=self.STATUS_MAP[status])))
+                break
+            else:
+                time.sleep(2)
+
+
+def main():
+    DMOJMixin.API_KEY = ''
+
+    if not DMOJMixin.API_KEY:
+        raise ValueError('Please fill in DMOJMixin.API_KEY with your API key')
+
+    parser = argparse.ArgumentParser(description='DMOJ Command-line Submit')
+    parser.add_argument('problem_code')
+    parser.add_argument('language_key', choices=Language.KEY_ID.keys())
+    parser.add_argument('source_file')
+
+    args = parser.parse_args()
+
+    with open(args.source_file) as f:
+        source = f.read()
+
+    language_id = Language.get_id_by_key(args.language_key)
+
+    problem = Problem(problem_code=args.problem_code)
+    id = problem.submit(language_id, source)
+    submission = Submission(submission_id=id)
+    tracker = threading.Thread(target=submission.track)
+    tracker.start()
+    try:
+        tracker.join()
+    except KeyboardInterrupt:
+        submission.abort()
+        tracker.join()
+
+
+if __name__ == '__main__':
+    main()
