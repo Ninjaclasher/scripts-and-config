@@ -2,6 +2,8 @@
 
 import argparse
 import os
+import pipes
+
 
 class Server:
     def __init__(self, hostname, address, user, port, identity):
@@ -12,32 +14,38 @@ class Server:
         self.user = user
 
     def format(self, location):
-        return '{0}@{1}:{2}'.format(self.user, self.address, location.split(self.hostname + ':', 1)[-1])
+        return '{0}@{1}:{2}'.format(self.user, self.address, pipes.quote(location.split(self.hostname + ':', 1)[-1]))
+
 
 servers = {}
 
+
 def scp(source, destination):
     if ':' in source:
-        source = servers[source.split(':')[0]].format(source)
+        source_server = servers[source.split(':')[0]]
+        port = source_server.port
+        identity = source_server.identity
+        source = source_server.format(source)
     if ':' in destination:
         destination_server = servers[destination.split(':')[0]]
         port = destination_server.port
         identity = destination_server.identity
         destination = destination_server.format(destination)
-    else:
-        port = 22
-        identity = '~/.ssh/id_rsa'
+
+    source = pipes.quote(source)
+    destination = pipes.quote(destination)
+
     os.system(
         'scp -r -i {identity} -P {port} {source} {destination}'.format(
             identity=identity,
             port=port,
             source=source,
-            destination=destination
-        )
+            destination=destination,
+        ),
     )
 
 
-with open(os.environ['HOME'] + '/.ssh/config', 'r') as f:
+with open(os.path.join(os.environ['HOME'], '.ssh', 'config'), 'r') as f:
     for x in f.read().strip().split('\n\n'):
         settings = {
             'port': 22,
@@ -62,8 +70,8 @@ def check_server(location):
 
 
 parser = argparse.ArgumentParser(description='SCP Wrapper')
-parser.add_argument('source', help='The source file.', type=check_server)
-parser.add_argument('destination', help='The destination.', type=check_server)
+parser.add_argument('source', help='Source location.', type=check_server)
+parser.add_argument('destination', help='Destination location.', type=check_server)
 
 args = parser.parse_args()
-scp(args.source.replace(' ', '\\ '), args.destination.replace(' ', '\\ '))
+scp(args.source, args.destination)
