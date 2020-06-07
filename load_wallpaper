@@ -1,20 +1,23 @@
 #killall random_wallpaper
 pkill -f random_wall
+
+WALLPAPER_DIR=$HOME/.local/share/wallpapers/
+
 if [ "$1" == "1" ]; then
-    nitrogen --set-auto /home/evanzhang/.local/share/wallpapers/ubuntu.jpg
+    nitrogen --set-zoom-fill $WALLPAPER_DIR/ubuntu.jpg
 fi
 if [ "$1" == "2" ]; then
-    nitrogen --set-auto /home/evanzhang/.local/share/wallpapers/windows.jpg
+    nitrogen --set-zoom-fill $WALLPAPER_DIR/windows.jpg
 fi
 if [ "$1" == "3" ]; then
-    nitrogen --set-zoom-fill /home/evanzhang/.local/share/wallpapers/$(ls /home/evanzhang/.local/share/wallpapers | grep 'grub' | dmenu -i -fn 0 -sb '#f28048' -p \\"Which wallpaper would you like?\\")
+    nitrogen --set-zoom-fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | grep 'grub' | dmenu -i -fn 0 -sb '#f28048' -p \\"Which wallpaper would you like?\\")
 fi
 if [ "$1" == "4" ]; then
-    nitrogen --set-zoom-fill /home/evanzhang/.local/share/wallpapers/$(ls /home/evanzhang/.local/share/wallpapers | dmenu -i -fn 0 -sb '#f28048' -p \\"Which wallpaper would you like?\\")
+    nitrogen --set-zoom-fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | dmenu -i -fn 0 -sb '#f28048' -p \\"Which wallpaper would you like?\\")
 fi
 if [ "$1" == "5" ]; then
-    nitrogen --random --set-zoom-fill /home/evanzhang/.local/share/wallpapers/
+    nitrogen --random --set-zoom-fill $WALLPAPER_DIR
 fi
 if [ "$1" == "6" ]; then
-    exec /home/evanzhang/.scripts/random_wallpaper >/dev/null &
+    exec $HOME/.scripts/random_wallpaper >/dev/null &
 fi
