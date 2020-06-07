@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-from colour import Color
 import os
 import random
 import sys
 import time
+
+from colour import Color
 
 
 def RGBHex(RGB):
@@ -25,6 +26,6 @@ while True:
     run = list(cur_col.range_to(nex_col, num_iter))
     for x in map(str, run):
         os.system('xsetroot -solid "{}"'.format(x))
-        print('Current colour: {}'.format(x))
+        print('Current colour: {}'.format(x), file=sys.stderr)
         time.sleep(delay)
     cur, cur_col = nex, nex_col
