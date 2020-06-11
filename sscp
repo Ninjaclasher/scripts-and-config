@@ -14,7 +14,10 @@ class Server:
         self.user = user
 
     def format(self, location):
-        return '{0}@{1}:{2}'.format(self.user, self.address, pipes.quote(location.split(self.hostname + ':', 1)[-1]))
+        location = location.split(self.hostname + ':', 1)[-1]
+        if location:
+            location = pipes.quote(location)
+        return '{0}@{1}:{2}'.format(self.user, self.address, location)
 
 
 servers = {}
