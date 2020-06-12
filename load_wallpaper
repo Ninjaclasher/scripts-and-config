@@ -1,7 +1,7 @@
 #killall random_wallpaper
 pkill -f random_wall
 
-WALLPAPER_DIR=$HOME/.local/share/wallpapers/
+WALLPAPER_DIR=$HOME/.scripts/wallpapers/
 
 if [ "$1" == "1" ]; then
     nitrogen --set-zoom-fill $WALLPAPER_DIR/ubuntu.jpg
