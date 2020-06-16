@@ -36,6 +36,7 @@ gaps outer 0
 set $mod                            Mod1
 set $term                           xterm -r -fa \\"monospace\\" -fs 10
 set $home                           /home/evanzhang/
+set $script_dir                     $home/.scripts/user-scripts/
 
 #####################
 #### Resize Mode ####
@@ -200,11 +201,11 @@ bindsym Ctrl+Mod1+Mod4+Shift+0      move container to workspace $ws20
 #### Status bar Config ####
 ###########################
 
-#bar
+#bar 
 #{
 #    status_command python3 $home/.config/i3/i3status.py
 #    position top
-#    colors
+#    colors 
 #    {
 #        focused_workspace           #f28048 #f77433 #000000
 #        urgent_workspace            #fc3f3f #f22e2e #ffffff
@@ -233,7 +234,7 @@ bindsym $mod+Shift+c                reload
 ## restart i3 inplace (preserves your layout/session, can be used to upgrade i3) ##
 bindsym $mod+Shift+r                restart
 ## exit i3 (logs you out of your X session) ##
-bindsym $mod+Shift+e                exec sh $home/.scripts/prompt "You pressed the exit shortcut. Do you really want to exit i3? This will end your X session." "exec i3-msg exit"
+bindsym $mod+Shift+e                exec sh $script_dir/prompt "You pressed the exit shortcut. Do you really want to exit i3? This will end your X session." "exec i3-msg exit"
 
 ########################
 #### User shortcuts ####
@@ -278,12 +279,12 @@ for_window [class="Thunderbird"] border none
 # for_window [class="XTerm"] border none
 
 ## Nitrogen Commands ##
-bindsym Mod4+Shift+u                exec --no-startup-id $home/.scripts/load_wallpaper "1"
-bindsym Mod4+Shift+w                exec --no-startup-id $home/.scripts/load_wallpaper "2"
-bindsym Mod4+Shift+g                exec --no-startup-id $home/.scripts/load_wallpaper "3"
-bindsym Mod4+Shift+n                exec --no-startup-id $home/.scripts/load_wallpaper "4"
-bindsym Mod4+Shift+r                exec --no-startup-id $home/.scripts/load_wallpaper "5"
-bindsym Mod4+Shift+c                exec --no-startup-id $home/.scripts/load_wallpaper "6"
+bindsym Mod4+Shift+u                exec --no-startup-id $script_dir/load_wallpaper "1"
+bindsym Mod4+Shift+w                exec --no-startup-id $script_dir/load_wallpaper "2"
+bindsym Mod4+Shift+g                exec --no-startup-id $script_dir/load_wallpaper "3"
+bindsym Mod4+Shift+n                exec --no-startup-id $script_dir/load_wallpaper "4"
+bindsym Mod4+Shift+r                exec --no-startup-id $script_dir/load_wallpaper "5"
+bindsym Mod4+Shift+c                exec --no-startup-id $script_dir/load_wallpaper "6"
 
 ##################################
 #### Move mouse with keyboard ####
