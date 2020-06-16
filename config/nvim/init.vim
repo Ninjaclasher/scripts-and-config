@@ -20,6 +20,11 @@ map!        <C-S-Right>     <Esc>:tabm +1<Cr>a
 map         <C-S-Left>      :tabm -1<Cr>
 map!        <C-S-Left>      <Esc>:tabm -1<Cr>a
 
+nmap        <A-Up>          :wincmd k<Cr>
+nmap        <A-Down>        :wincmd j<Cr>
+nmap        <A-Left>        :wincmd h<Cr>
+nmap        <A-Right>       :wincmd l<Cr>
+
 map         <C-s>           :w<Cr>
 map!        <C-s>           <Esc>:w<Cr>a
 map         <C-z>           :u<Cr>
@@ -46,6 +51,8 @@ map!        <F10>           <Esc>:-tab split<Cr>:te compile %<Cr>i
 
 map         <F8>            <Esc>:set number<Cr>:set relativenumber<Cr>i
 map!        <F8>            <Esc>:set number<Cr>:set relativenumber<Cr>i
+map         <F7>            :%s/\s\+$//e<Cr>:noh<Cr>
+map!        <F7>            <Esc>:%s/\s\+$//e<Cr>:noh<Cr>a
 
 set         whichwrap+=<,>,[,],h,l
 set         tabstop=4
@@ -58,9 +65,11 @@ set         background=light
 "set        mouse=a
 au          FocusGained,BufEnter * :checktime
 
-let         g:usemarks=0
+let g:usemarks=0
+let g:cb_jump_over_newlines=0
 
 let g:instant_markdown_slow=1
+
 let g:instant_markdown_autostart=0
 let g:instant_markdown_mathjax=1
 
