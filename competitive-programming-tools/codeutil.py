@@ -9,7 +9,7 @@ compile_command = {
     'python'    : '',
     'python2'   : '',
     'python3'   : '',
-    'haskell'   : 'ghc --make -dynamic {0} -o {1}.run'
+    'haskell'   : 'ghc --make -dynamic {0} -o {1}.run',
 }
 run_command = {
     'c'         : './{1}.run',
