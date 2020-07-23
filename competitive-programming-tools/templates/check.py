@@ -10,7 +10,7 @@ def check(proc_output, judge_output, judge_input, point_value, submission_source
         judge_output = utf8text(judge_output)
         submission_source = utf8text(submission_source).replace('\r', '')
 
-    except (ValueError, IndexError, TypeError, OverflowError):
+    except (AssertionError, ValueError, IndexError, TypeError, OverflowError):
         return False
     except Exception as e:
         raise InternalError('Error in checker - ' + str(e))
