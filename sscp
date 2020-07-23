@@ -52,7 +52,7 @@ with open(os.path.join(os.environ['HOME'], '.ssh', 'config'), 'r') as f:
     for x in f.read().strip().split('\n\n'):
         settings = {
             'port': 22,
-            'identity': '~/.ssh/id_rsa',
+            'identityfile': '~/.ssh/id_rsa',
         }
         for y in x.strip().split('\n'):
             key, value = y.split()
@@ -62,7 +62,7 @@ with open(os.path.join(os.environ['HOME'], '.ssh', 'config'), 'r') as f:
             address=settings['hostname'],
             user=settings['user'],
             port=settings['port'],
-            identity=settings['identity'],
+            identity=settings['identityfile'],
         )
 
 
