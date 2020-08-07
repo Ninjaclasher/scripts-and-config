@@ -1,4 +1,5 @@
 compile_command = {
+    'bash'      : '',
     'c'         : 'gcc -fmax-errors=3 -Wall -Wshadow -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run',
     'c++'       : 'g++ -fmax-errors=3 -Wall -Wshadow -Wno-unused-result -fsanitize=undefined -O2 {0} -o {1}.run',
     'gas'       : 'as {0} -o tmp && ld tmp -o {1}.run && rm tmp',
@@ -12,6 +13,7 @@ compile_command = {
     'haskell'   : 'ghc --make -dynamic {0} -o {1}.run',
 }
 run_command = {
+    'bash'      : 'bash {0}',
     'c'         : './{1}.run',
     'c++'       : './{1}.run',
     'gas'       : './{1}.run',
@@ -25,6 +27,7 @@ run_command = {
     'haskell'   : './{1}.run',
 }
 default_lang = {
+    'sh'        : 'bash',
     'cpp'       : 'c++',
     'c'         : 'c',
     'asm'       : 'gas',
@@ -34,6 +37,7 @@ default_lang = {
     'hs'        : 'haskell',
 }
 ext = {
+    'bash'      : 'sh',
     'c++'       : 'cpp',
     'c'         : 'c',
     'gas'       : 'asm',
