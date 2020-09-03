@@ -35,8 +35,7 @@ gaps outer 0
 
 set $mod                            Mod1
 set $term                           xterm -r -fa \\"monospace\\" -fs 10
-set $home                           /home/evanzhang/
-set $script_dir                     $home/.scripts/user-scripts/
+set $script_dir                     $HOME/.scripts/user-scripts/
 
 #####################
 #### Resize Mode ####
@@ -203,7 +202,7 @@ bindsym Ctrl+Mod1+Mod4+Shift+0      move container to workspace $ws20
 
 #bar 
 #{
-#    status_command python3 $home/.config/i3/i3status.py
+#    status_command python3 $HOME/.config/i3/i3status.py
 #    position top
 #    colors 
 #    {
@@ -217,7 +216,8 @@ bindsym Ctrl+Mod1+Mod4+Shift+0      move container to workspace $ws20
 #    font pango:DejaVu Sans Mono 11
 #}
 
-exec_always --no-startup-id $home/.config/polybar/launch.sh
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id $script_dir/clipboard_manager
 
 client.focused                      #f79c6f #f28f5e #000000
 client.unfocused                    #353535 #2e2e2e #ffffff
@@ -265,9 +265,9 @@ bindsym $mod+Ctrl+j                 exec --no-startup-id setxkbmap dvp
 ## Set keyboard layout
 
 ## Take Screenshots ##
-bindsym --release Print             exec --no-startup-id flameshot full -p $home
-bindsym --release Mod4+Print        exec --no-startup-id flameshot gui -p $home
-bindsym --release Mod4+Shift+Print  exec --no-startup-id flameshot screen -p $home
+bindsym --release Print             exec --no-startup-id flameshot full -p $HOME
+bindsym --release Mod4+Print        exec --no-startup-id flameshot gui -p $HOME
+bindsym --release Mod4+Shift+Print  exec --no-startup-id flameshot screen -p $HOME
 
 ## Remove Borders ##
 for_window [class="Chromium"] border none
