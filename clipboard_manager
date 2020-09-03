@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+import gi
+gi.require_version('Gdk', '3.0')
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gdk, Gtk  # noqa: E402
+
+
+text_cache = None
+image_cache = None
+
+
+def callback(*args):
+    global text_cache, image_cache
+
+    text = clip.wait_for_text()
+    image = clip.wait_for_image()
+
+    if text is None and image is None:
+        if text_cache is not None:
+            clip.set_text(text_cache, -1)
+        if image_cache is not None:
+            clip.set_image(image_cache)
+    else:
+        text_cache = text
+        image_cache = image
+
+
+clip = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+clip.connect('owner-change', callback)
+Gtk.main()
