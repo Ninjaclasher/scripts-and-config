@@ -25,7 +25,7 @@ while True:
     num_iter = sum(abs(nex[x]-cur[x]) for x in range(3)) // random.randint(1, 4)
     run = list(cur_col.range_to(nex_col, num_iter))
     for x in map(str, run):
-        os.system('xsetroot -solid "{}"'.format(x))
+        os.system('hsetroot -solid "{}"'.format(x))
         print('Current colour: {}'.format(x), file=sys.stderr)
         time.sleep(delay)
     cur, cur_col = nex, nex_col
