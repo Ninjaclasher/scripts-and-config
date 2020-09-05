@@ -2,22 +2,23 @@
 pkill -f random_wall
 
 WALLPAPER_DIR=$HOME/.scripts/wallpapers/
+SCRIPT_DIR=$HOME/.scripts/user-scripts/
 
 if [ "$1" == "1" ]; then
-    nitrogen --set-zoom-fill $WALLPAPER_DIR/ubuntu.jpg
+    hsetroot -fill $WALLPAPER_DIR/ubuntu.jpg
 fi
 if [ "$1" == "2" ]; then
-    nitrogen --set-zoom-fill $WALLPAPER_DIR/windows.jpg
+    hsetroot -fill $WALLPAPER_DIR/windows.jpg
 fi
 if [ "$1" == "3" ]; then
-    nitrogen --set-zoom-fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | grep 'grub' | dmenu -i -fn 0 -sb '#f28048' -p \\"Which wallpaper would you like?\\")
+    hsetroot -fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | grep 'grub' | dmenu -i -fn 0 -sb '#f28048' -p "Which wallpaper would you like?")
 fi
 if [ "$1" == "4" ]; then
-    nitrogen --set-zoom-fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | dmenu -i -fn 0 -sb '#f28048' -p \\"Which wallpaper would you like?\\")
+    hsetroot -fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | dmenu -i -fn 0 -sb '#f28048' -p "Which wallpaper would you like?")
 fi
 if [ "$1" == "5" ]; then
-    nitrogen --random --set-zoom-fill $WALLPAPER_DIR
+    hsetroot -fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | shuf -n 1)
 fi
 if [ "$1" == "6" ]; then
-    exec $HOME/.scripts/random_wallpaper >/dev/null &
+    exec $SCRIPT_DIR/random_wallpaper >/dev/null &
 fi
