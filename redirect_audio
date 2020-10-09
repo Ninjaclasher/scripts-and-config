@@ -1,0 +1,29 @@
+#!/bin/bash
+
+[ -z "$1" ] && echo "$0 program_name" && exit 1
+
+id=$(pactl list sink-inputs | perl -p0e "s/(.*Sink Input #(\\d).*$1.*)|(.*)/\\2/si")
+mapfile -t sinks < <( pactl list sinks | grep -Po "Name: \K(.*)")
+sink_len=${#sinks[@]}
+
+[ $sink_len -eq "0" ] && echo "No sink found." && exit 1
+[ -z "$id" ] && echo "$1 is not running." && exit 1
+
+if [ $sink_len -eq "1" ]
+then
+    sink=${sinks[0]}
+else
+    echo "Multiple sinks found."
+    for ((i = 0; i < $sink_len; i++))
+    do
+        echo "$i. ${sinks[$i]}"
+    done
+    read -p "Which sink would you like to connect to? " sink_idx
+    sink=${sinks[$sink_idx]}
+fi
+
+pactl load-module module-null-sink sink_name=Virtual1
+pactl move-sink-input $id Virtual1
+pactl set-sink-input-volume $id 0.5
+pactl load-module module-loopback source=Virtual1.monitor sink=$sink
+pactl set-default-source Virtual1.monitor
