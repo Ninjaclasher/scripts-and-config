@@ -10,7 +10,7 @@ fi
 xrdb .Xresources
 setxkbmap -option compose:ralt
 
-eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
+eval $(/usr/bin/gnome-keyring-daemon --start)
 export SSH_AUTH_SOCK
 
 exec /usr/bin/i3
