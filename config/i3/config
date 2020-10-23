@@ -28,7 +28,7 @@ gaps outer 0
                 ########################
 ########################################################
 ## Ctrl  + Alt .................... Run User Programs ##
-## Shift + Win .............. Run Nitrogen Wallpapers ##
+## Shift + Win ............ Run Background Wallpapers ##
 ## Shift + Alt ...................... System Commands ##
 ## Alt .................................. i3 Commands ##
 ########################################################
@@ -104,6 +104,9 @@ bindsym $alt+s                      layout stacking
 bindsym $alt+w                      layout tabbed
 bindsym $alt+e                      layout toggle split
 
+## move workspace to screen ##
+bindsym $alt+m                      move workspace to output left
+
 ## toggle tiling / floating ##
 bindsym $alt+space                  floating toggle
 
@@ -115,14 +118,14 @@ bindsym $alt+a                      focus parent
 bindsym $alt+d                      focus child
 
 ## show/hide scratchpad ##
-bindsym $alt+minus move scratchpad
-bindsym $alt+plus scratchpad show
+bindsym $alt+minus                  move scratchpad
+bindsym $alt+plus                   scratchpad show
 
 ## resize windows ##
-bindsym Mod1+$win+Shift+Left         resize shrink width 10 px or 10 ppt
-bindsym Mod1+$win+Shift+Down         resize grow height 10 px or 10 ppt
-bindsym Mod1+$win+Shift+Up           resize shrink height 10 px or 10 ppt
-bindsym Mod1+$win+Shift+Right        resize grow width 10 px or 10 ppt
+bindsym Mod1+$win+Shift+Left        resize shrink width 10 px or 10 ppt
+bindsym Mod1+$win+Shift+Down        resize grow height 10 px or 10 ppt
+bindsym Mod1+$win+Shift+Up          resize shrink height 10 px or 10 ppt
+bindsym Mod1+$win+Shift+Right       resize grow width 10 px or 10 ppt
 
 
 ##########################
@@ -218,6 +221,7 @@ bindsym Ctrl+Mod1+$win+Shift+0      move container to workspace $ws20
 #}
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id killall -q clipboard_manager
 exec_always --no-startup-id $script_dir/clipboard_manager
 exec --no-startup-id $script_dir/load_wallpaper "2"
 
@@ -249,22 +253,21 @@ bindsym XF86MonBrightnessDown       exec --no-startup-id xbacklight -5
 ## Change Volume ##
 bindsym XF86AudioRaiseVolume        exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ +2%
 bindsym XF86AudioLowerVolume        exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ -2%
-bindsym XF86AudioMute               exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMute               exec --no-startup-id pactl -- set-sink-mute @DEFAULT_SINK@ toggle
 bindsym $alt+Ctrl+Up                exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ +2%
 bindsym $alt+Ctrl+Down              exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ -2%
 
 ## Run User Programs ##
-bindsym $alt+Ctrl+l                 exec --no-startup-id nautilus
+bindsym $alt+Ctrl+l                 exec --no-startup-id thunar
 bindsym $alt+Ctrl+i                 exec --no-startup-id chromium --incognito
 bindsym $alt+Ctrl+t                 exec --no-startup-id $term
 bindsym $alt+Ctrl+n                 exec --no-startup-id sublime-text
 bindsym $alt+Ctrl+p                 exec --no-startup-id $term -e python3 -q
 bindsym $alt+Ctrl+equal             exec --no-startup-id "$term -fs 11 -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
 
+## Set keyboard layout ##
 bindsym $alt+Ctrl+h                 exec --no-startup-id setxkbmap us
 bindsym $alt+Ctrl+j                 exec --no-startup-id setxkbmap dvp
-
-## Set keyboard layout
 
 ## Take Screenshots ##
 bindsym --release Print             exec --no-startup-id flameshot full -p $HOME
@@ -272,15 +275,20 @@ bindsym --release $win+Print        exec --no-startup-id flameshot gui -p $HOME
 bindsym --release $win+Shift+Print  exec --no-startup-id flameshot screen -p $HOME
 
 ## Remove Borders ##
-for_window [class="Chromium"] border none
-for_window [class="Firefox"] border none
-for_window [class="Sublime-text"] border none
-for_window [class="discord"] border none
-for_window [class="Slack"] border none
-for_window [class="Thunderbird"] border none
+for_window [class="Chromium"]       border none
+for_window [class="discord"]        border none
+for_window [class="Firefox"]        border none
+for_window [class="Slack"]          border none
+for_window [class="Sublime-text"]   border none
+for_window [class="Thunderbird"]    border none
 # for_window [class="XTerm"] border none
 
-## Nitrogen Commands ##
+## Assign Programs ##
+assign [class="Thunderbird"]        $ws8
+assign [class="Slack"]              $ws9
+assign [class="discord"]            $ws10
+
+## Background Commands ##
 bindsym $win+Shift+u                exec --no-startup-id $script_dir/load_wallpaper "1"
 bindsym $win+Shift+w                exec --no-startup-id $script_dir/load_wallpaper "2"
 bindsym $win+Shift+g                exec --no-startup-id $script_dir/load_wallpaper "3"
@@ -313,8 +321,3 @@ bindsym $win+Ctrl+Down              exec --no-startup-id "xdotool mousemove_rela
 bindsym $win+Ctrl+Up                exec --no-startup-id "xdotool mousemove_relative -- 0 -$pos_f, xdotool selectwindow"
 bindsym $win+Ctrl+Right             exec --no-startup-id "xdotool mousemove_relative $pos_f 0, xdotool selectwindow"
 bindsym $win+Ctrl+Left              exec --no-startup-id "xdotool mousemove_relative -- -$pos_f 0, xdotool selectwindow"
-
-
-assign [class="Thunderbird"] $ws8
-assign [class="Slack"]       $ws9
-assign [class="discord"]     $ws10
