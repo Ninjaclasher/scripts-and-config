@@ -221,8 +221,7 @@ bindsym Ctrl+Mod1+$win+Shift+0      move container to workspace $ws20
 #}
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
-exec_always --no-startup-id killall -q clipboard_manager
-exec_always --no-startup-id $script_dir/clipboard_manager
+exec_always --no-startup-id "(killall -q clipboard_manager || true) && $script_dir/clipboard_manager"
 exec --no-startup-id $script_dir/load_wallpaper "2"
 
 client.focused                      #f79c6f #f28f5e #000000
