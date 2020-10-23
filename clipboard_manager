@@ -4,6 +4,11 @@ gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gdk, Gtk  # noqa: E402
 
+import setproctitle  # noqa: E402
+
+
+setproctitle.setproctitle('clipboard_manager')
+
 
 text_cache = None
 image_cache = None
