@@ -15,6 +15,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-fugitive'
+Plug 'lervag/vimtex'
 call plug#end()
 
 map         <C-Right>       :tabn<Cr>
@@ -67,6 +68,7 @@ set         expandtab
 set         autoread
 set         nomodeline
 set         background=light
+set         undofile
 "set        number
 "set        mouse=a
 au          FocusGained,BufEnter * :checktime
@@ -75,8 +77,15 @@ let g:usemarks=0
 let g:cb_jump_over_newlines=0
 
 let g:instant_markdown_slow=1
-
 let g:instant_markdown_autostart=0
 let g:instant_markdown_mathjax=1
 
 let g:airline_theme='onedark'
+
+let g:tex_flavor='latex'
+let b:tex_stylish=1
+let g:vimtex_quickfix_open_on_warning=0
+let g:vimtex_quickfix_mode=2
+let g:vimtex_view_general_viewer='zathura'
+
+hi QuickFixLine guibg=Black
