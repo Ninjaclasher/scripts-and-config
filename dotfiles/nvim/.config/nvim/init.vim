@@ -15,7 +15,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-fugitive'
-Plug 'lervag/vimtex'
+Plug 'lervag/vimtex', {'for': 'tex'}
 call plug#end()
 
 map         <C-Right>       :tabn<Cr>
@@ -85,7 +85,8 @@ let g:airline_theme='onedark'
 let g:tex_flavor='latex'
 let b:tex_stylish=1
 let g:vimtex_quickfix_open_on_warning=0
-let g:vimtex_quickfix_mode=2
+let g:vimtex_quickfix_mode=0
 let g:vimtex_view_general_viewer='zathura'
+let g:vimtex_syntax_autoload_packages=['amsmath','array','cases','tikz']
 
 hi QuickFixLine guibg=Black
