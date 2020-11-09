@@ -1,7 +1,9 @@
 set font "monospace 11"
 set window-title-home-tilde true
+set window-title-page true
 set statusbar-home-tilde true
 set selection-clipboard clipboard
+set scroll-page-aware true
 
 
 map <S-Up> scroll full-up
