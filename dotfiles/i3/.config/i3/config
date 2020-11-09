@@ -263,6 +263,7 @@ bindsym $alt+Ctrl+t                 exec --no-startup-id $term
 bindsym $alt+Ctrl+n                 exec --no-startup-id sublime-text
 bindsym $alt+Ctrl+p                 exec --no-startup-id $term -e python3 -q
 bindsym $alt+Ctrl+equal             exec --no-startup-id "$term -fs 11 -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
+bindsym $alt+Ctrl+minus             exec --no-startup-id $term -fs 11 -e isympy
 
 ## Set keyboard layout ##
 bindsym $alt+Ctrl+h                 exec --no-startup-id setxkbmap us
