@@ -13,7 +13,7 @@ def main():
     global default_lang
     global run_command
     parser = argparse.ArgumentParser(description='Compile files in various languages.')
-    parser.add_argument('--language', '-l', default='c++', choices=ext.keys(), help='The language to compile in.')
+    parser.add_argument('--language', '-l', choices=ext.keys(), help='The language to compile in.')
     parser.add_argument('--compile-only', '-c', action='store_true', help='Only compile the file.')
     parser.add_argument('file', help='File to compile.')
     parser.add_argument('stdin_file', nargs='?', help='Stdin file.')
@@ -22,16 +22,22 @@ def main():
     args = parser.parse_args()
     lang = args.language
     name, ex = os.path.splitext(args.file)
-    ex = ex.lstrip('.')
+    ex = ex[1:]
 
-    cmd = compile_command[lang]
-    run = run_command[lang]
-    if '--language' not in sys.argv and '-l' not in sys.argv:
-        try:
-            cmd = compile_command[default_lang[ex]]
-            run = run_command[default_lang[ex]]
-        except KeyError:
-            pass
+    try:
+        if lang is None:
+            lang = default_lang[ex]
+    except KeyError:
+        if os.access(args.file, os.X_OK):
+            cmd = ''
+            run = './' + args.file
+        else:
+            print('Unknown file type. Aborting...', file=sys.stderr)
+            return 1
+    else:
+        cmd = compile_command[lang]
+        run = run_command[lang]
+
     if cmd != '':
         print('\n###################\n#### COMPILING ####\n###################')
         ret_code = os.system('time ' + cmd.format(args.file, name))
