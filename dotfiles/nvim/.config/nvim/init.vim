@@ -87,6 +87,6 @@ let b:tex_stylish=1
 let g:vimtex_quickfix_open_on_warning=0
 let g:vimtex_quickfix_mode=0
 let g:vimtex_view_general_viewer='zathura'
-let g:vimtex_syntax_autoload_packages=['amsmath','array','cases','tikz']
+let g:vimtex_syntax_autoload_packages=['amsmath','tikz','markdown']
 
 hi QuickFixLine guibg=Black
