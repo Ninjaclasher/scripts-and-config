@@ -232,7 +232,7 @@ client.unfocused                    #353535 #2e2e2e #ffffff
 #####################################
 
 ## Run Program ##
-bindsym $alt+Shift+i                exec --no-startup-id dmenu_run -i -fn 0 -sb '#f28048'
+bindsym $alt+Shift+i                exec --no-startup-id rofi -show run
 
 ## reload the configuration file ##
 bindsym $alt+Shift+c                reload
