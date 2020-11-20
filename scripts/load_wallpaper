@@ -11,10 +11,10 @@ if [ "$1" == "2" ]; then
     hsetroot -fill $WALLPAPER_DIR/windows.jpg
 fi
 if [ "$1" == "3" ]; then
-    hsetroot -fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | grep 'grub' | dmenu -i -fn 0 -sb '#f28048' -p "Which wallpaper would you like?")
+    hsetroot -fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | grep 'grub' | rofi -dmenu -p "Which wallpaper would you like?")
 fi
 if [ "$1" == "4" ]; then
-    hsetroot -fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | dmenu -i -fn 0 -sb '#f28048' -p "Which wallpaper would you like?")
+    hsetroot -fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | rofi -dmenu -p "Which wallpaper would you like?")
 fi
 if [ "$1" == "5" ]; then
     hsetroot -fill $WALLPAPER_DIR/$(ls $WALLPAPER_DIR | shuf -n 1)
