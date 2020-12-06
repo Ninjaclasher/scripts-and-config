@@ -1,9 +1,11 @@
 configuration {
-    modi: "ssh,run,window";
+    modi: "ssh,drun,run,window";
     theme: "custom-orange";
     terminal: "xterm";
     kb-move-word-back: "Alt+b,Shift+Left";
     kb-move-word-forward: "Alt+f,Shift+Right";
     kb-mode-next: "Control+Right";
     kb-mode-previous: "Control+Left";
+    parse-known-hosts: false;
+    show-icons: true;
 }

@@ -231,7 +231,7 @@ client.unfocused                    #353535 #2e2e2e #ffffff
 #####################################
 
 ## Run Program ##
-bindsym $alt+Shift+i                exec --no-startup-id rofi -show run
+bindsym $alt+Shift+i                exec --no-startup-id rofi -show drun
 
 ## reload the configuration file ##
 bindsym $alt+Shift+c                reload
