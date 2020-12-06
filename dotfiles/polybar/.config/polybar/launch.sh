@@ -6,7 +6,7 @@ killall -q polybar
 # polybar-msg cmd quit
 
 if type "xrandr"; then
-  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+  for m in $(polybar -m | cut -d":" -f1); do
     if [[ $m == "eDP1" ]]; then
         TRAY_POSITION=right
     else
