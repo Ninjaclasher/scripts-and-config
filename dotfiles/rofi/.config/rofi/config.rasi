@@ -1,7 +1,7 @@
 configuration {
     modi: "ssh,run,window";
     theme: "custom-orange";
-    terminal: "xterm -r -fa 'Monospace' -fs 10";
+    terminal: "xterm";
     kb-move-word-back: "Alt+b,Shift+Left";
     kb-move-word-forward: "Alt+f,Shift+Right";
     kb-mode-next: "Control+Right";

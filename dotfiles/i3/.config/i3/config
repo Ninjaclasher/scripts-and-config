@@ -35,7 +35,7 @@ gaps outer 0
 
 set $alt                            Mod1
 set $win                            Mod4
-set $term                           xterm -r -fa \\"monospace\\" -fs 10
+set $term                           xterm
 set $script_dir                     $HOME/.scripts/user-scripts/
 
 #####################
