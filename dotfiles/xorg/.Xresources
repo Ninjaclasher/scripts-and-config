@@ -5,5 +5,4 @@ xterm*VT100.Translations: #override \
 XTerm.termName: xterm-256color
 XTerm.vt100.faceName: monospace
 XTerm.vt100.faceSize: 10
-XTerm.vt100.reverseVideo: true
-XTerm.borderColor: white
+XTerm*reverseVideo: true
