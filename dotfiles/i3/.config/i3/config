@@ -22,6 +22,7 @@ font pango:monospace 9.7
 
 gaps inner 0
 gaps outer 0
+mouse_warping none
 
                 ########################
                 ### Command Overview ###
@@ -175,8 +176,8 @@ bindsym $alt+Ctrl+Shift+7           workspace $ws17
 bindsym $alt+Ctrl+Shift+8           workspace $ws18
 bindsym $alt+Ctrl+Shift+9           workspace $ws19
 bindsym $alt+Ctrl+Shift+0           workspace $ws20
-bindsym $alt+Tab                    workspace next
-bindsym $alt+Shift+Tab              workspace prev
+bindsym $alt+Tab                    workspace next_on_output
+bindsym $alt+Shift+Tab              workspace prev_on_output
 
 ## move focused container to workspace ##
 bindsym Ctrl+Mod1+$win+1            move container to workspace $ws1
@@ -204,11 +205,11 @@ bindsym Ctrl+Mod1+$win+Shift+0      move container to workspace $ws20
 #### Status bar Config ####
 ###########################
 
-#bar 
+#bar
 #{
 #    status_command python3 $HOME/.config/i3/i3status.py
 #    position top
-#    colors 
+#    colors
 #    {
 #        focused_workspace           #f28048 #f77433 #000000
 #        urgent_workspace            #fc3f3f #f22e2e #ffffff
@@ -256,6 +257,8 @@ bindsym $alt+Ctrl+Up                exec --no-startup-id pactl -- set-sink-volum
 bindsym $alt+Ctrl+Down              exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ -2%
 
 ## Run User Programs ##
+bindsym --release $alt+Ctrl+e       exec --no-startup-id "notify-send \\"$(colorpicker --one-shot --short)\\""
+bindsym $alt+Ctrl+x                 exec --no-startup-id xournalpp
 bindsym $alt+Ctrl+l                 exec --no-startup-id thunar
 bindsym $alt+Ctrl+i                 exec --no-startup-id chromium --incognito
 bindsym $alt+Ctrl+t                 exec --no-startup-id $term
