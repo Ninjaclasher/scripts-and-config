@@ -29,6 +29,7 @@ run_command = {
 default_lang = {
     'sh'        : 'bash',
     'cpp'       : 'c++',
+    'cc'        : 'c++',
     'c'         : 'c',
     'asm'       : 'gas',
     'java'      : 'java',
