@@ -13,7 +13,7 @@ if type "xrandr"; then
     else
         TRAY_POSITION=none
     fi
-    TRAY_POS=$TRAY_POSITION MONITOR=$m polybar mainbar > /tmp/polybar.log 2>&1 &
+    TRAY_POS=$TRAY_POSITION MONITOR=$m polybar mainbar > /tmp/polybar-$m.log 2>&1 &
   done
 else
   polybar mainbar > /tmp/polybar.log 2>&1 &
