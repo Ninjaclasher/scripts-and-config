@@ -9,13 +9,14 @@ endif
 
 call plug#begin()
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
-Plug 'LucHermitte/lh-brackets'
-Plug 'LucHermitte/lh-vim-lib'
+Plug 'jiangmiao/auto-pairs'
+Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-fugitive'
-Plug 'lervag/vimtex', {'for': 'tex', 'commit': '7c886a0731f1aa283899575615b75192ec3632b7'}
+Plug 'lervag/vimtex', {'for': 'tex'}
+", 'commit': '7c886a0731f1aa283899575615b75192ec3632b7'}
 Plug 'chaoren/vim-wordmotion'
 call plug#end()
 
@@ -64,6 +65,8 @@ map!        <F7>            <C-o>:%s/\s\+$//e<Cr><C-o>:noh<Cr>
 map         <F6>            :noh<Cr>
 map!        <F6>            <C-o>:noh<Cr>
 
+inoremap    ;<cr>           <end>;<cr>
+
 set         whichwrap+=<,>,[,],h,l
 set         tabstop=4
 set         shiftwidth=4
@@ -76,14 +79,17 @@ set         undofile
 "set        mouse=a
 au          FocusGained,BufEnter * :checktime
 
-let g:usemarks=0
-let g:cb_jump_over_newlines=0
+au          Filetype tex let b:AutoPairs = AutoPairsDefine({'$': '$', '$$': '$$'})
+au          Filetype html let b:AutoPairs = AutoPairsDefine({'<': '>', '<!--': '-->'})
+au          Filetype htmldjango let b:AutoPairs = AutoPairsDefine({'<': '>', '{%': '%}', '{{': '}}', '<!--': '-->'})
 
 let g:instant_markdown_slow=1
 let g:instant_markdown_autostart=0
 let g:instant_markdown_mathjax=1
 
 let g:airline_theme='onedark'
+
+let g:AutoPairsShortcutBackInsert='<C-L>'
 
 let g:tex_flavor='latex'
 let b:tex_stylish=1
