@@ -9,6 +9,8 @@ fi
 
 xrdb .Xresources
 setxkbmap -option compose:ralt
+# Disable insert
+xmodmap -e "keycode 118 ="
 
 eval $(/usr/bin/gnome-keyring-daemon --start)
 export SSH_AUTH_SOCK

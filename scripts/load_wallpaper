@@ -1,8 +1,8 @@
 #killall random_wallpaper
 pkill -f random_wall
 
-WALLPAPER_DIR=$HOME/.scripts/wallpapers/
-SCRIPT_DIR=$HOME/.scripts/user-scripts/
+WALLPAPER_DIR=$HOME/.dotfiles/scripts/wallpapers/
+SCRIPT_DIR=$HOME/.local/bin/
 
 if [ "$1" == "1" ]; then
     hsetroot -fill $WALLPAPER_DIR/ubuntu.jpg

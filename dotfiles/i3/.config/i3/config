@@ -37,7 +37,7 @@ mouse_warping none
 set $alt                            Mod1
 set $win                            Mod4
 set $term                           xterm
-set $script_dir                     $HOME/.scripts/user-scripts/
+set $script_dir                     $HOME/.local/bin/
 
 #####################
 #### Resize Mode ####
@@ -156,6 +156,7 @@ set $ws19                           "19"
 set $ws20                           "20"
 
 # switch to workspace ##
+bindsym $alt+Ctrl+grave             exec sh $script_dir/next_workspace
 bindsym $alt+Ctrl+1                 workspace $ws1
 bindsym $alt+Ctrl+2                 workspace $ws2
 bindsym $alt+Ctrl+3                 workspace $ws3
@@ -221,8 +222,9 @@ bindsym Ctrl+Mod1+$win+Shift+0      move container to workspace $ws20
 #    font pango:DejaVu Sans Mono 11
 #}
 
-exec_always --no-startup-id "(killall -q clipboard_manager || true) && $script_dir/clipboard_manager"
-exec_always --no-startup-id autorandr --default laptop -c --force
+exec_always --no-startup-id $script_dir/clipboard_manager
+exec_always --no-startup-id autorandr --default default -c --cycle --force
+exec_always --no-startup-id blueman-applet
 
 client.focused                      #f79c6f #f28f5e #000000
 client.unfocused                    #353535 #2e2e2e #ffffff
@@ -246,13 +248,14 @@ bindsym $alt+Shift+e                exec sh $script_dir/prompt "You pressed the 
 ########################
 
 ## Change Brightness ##
-bindsym XF86MonBrightnessUp         exec --no-startup-id xbacklight +5
-bindsym XF86MonBrightnessDown       exec --no-startup-id xbacklight -5
+bindsym XF86MonBrightnessUp         exec --no-startup-id brightnessctl -q set 5%+
+bindsym XF86MonBrightnessDown       exec --no-startup-id brightnessctl -q set 5%-
 
 ## Change Volume ##
 bindsym XF86AudioRaiseVolume        exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ +2%
 bindsym XF86AudioLowerVolume        exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ -2%
 bindsym XF86AudioMute               exec --no-startup-id pactl -- set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute            exec --no-startup-id pactl -- set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym $alt+Ctrl+Up                exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ +2%
 bindsym $alt+Ctrl+Down              exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ -2%
 
@@ -265,26 +268,28 @@ bindsym $alt+Ctrl+t                 exec --no-startup-id $term
 bindsym $alt+Ctrl+n                 exec --no-startup-id sublime-text
 bindsym $alt+Ctrl+p                 exec --no-startup-id $term -e python3 -q
 bindsym $alt+Ctrl+equal             exec --no-startup-id "$term -fs 11 -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
+bindsym XF86Calculator              exec --no-startup-id "$term -fs 11 -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
 bindsym $alt+Ctrl+minus             exec --no-startup-id $term -fs 11 -e isympy
 
 ## Set keyboard layout ##
 bindsym $alt+Ctrl+h                 exec --no-startup-id setxkbmap us
-bindsym $alt+Ctrl+j                 exec --no-startup-id setxkbmap dvp
+bindsym $alt+Ctrl+j                 exec --no-startup-id setxkbmap us -variant dvp
 
 ## Take Screenshots ##
-bindsym --release Print             exec --no-startup-id flameshot full -p $HOME
-bindsym --release $win+Print        exec --no-startup-id flameshot gui -p $HOME
-bindsym --release $win+Shift+Print  exec --no-startup-id flameshot screen -p $HOME
+bindsym --release Print             exec --no-startup-id flameshot full
+bindsym --release $win+Print        exec --no-startup-id flameshot gui
+bindsym --release $win+Shift+Print  exec --no-startup-id flameshot screen
 
 ## Remove Borders ##
 for_window [class="Chromium"]       border none
 for_window [class="discord"]        border none
 for_window [class="Firefox"]        border none
 for_window [class="Slack"]          border none
-for_window [class="Sublime-text"]   border none
+for_window [class="Subl"]           border none
 for_window [class="Thunderbird"]    border none
 
 ## Assign Programs ##
+assign [class="Abeluna"]            $ws7
 assign [class="Thunderbird"]        $ws8
 assign [class="Slack"]              $ws9
 assign [class="discord"]            $ws10

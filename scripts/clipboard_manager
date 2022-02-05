@@ -4,10 +4,20 @@ gi.require_version('Gdk', '3.0')
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gdk, Gtk  # noqa: E402
 
+import os  # noqa: E402
+import psutil  # noqa: E402
+import signal  # noqa: E402
+
 import setproctitle  # noqa: E402
 
 
-setproctitle.setproctitle('clipboard_manager')
+def initialize():
+    NAME = 'clipboard_manager'
+    setproctitle.setproctitle(NAME)
+    pid = os.getpid()
+    for p in psutil.process_iter():
+        if p.name() == NAME and p.pid != pid:
+            os.kill(p.pid, signal.SIGINT)
 
 
 text_cache = None
@@ -30,6 +40,7 @@ def callback(*args):
         image_cache = image
 
 
+initialize()
 clip = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 clip.connect('owner-change', callback)
 Gtk.main()

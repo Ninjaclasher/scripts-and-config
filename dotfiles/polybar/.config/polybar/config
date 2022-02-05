@@ -82,25 +82,25 @@ label-mode-foreground = #000
 label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
-label-focused = %index%
+label-focused = %name%
 label-focused-foreground = #fff
 label-focused-background = ${colors.background-alt}
 label-focused-underline= ${colors.primary}
 label-focused-padding = 1
 
 ; unfocused = Inactive workspace on any monitor
-label-unfocused = %index%
+label-unfocused = %name%
 label-unfocused-padding = 1
 
 ; visible = Active workspace on unfocused monitor
-label-visible = %index%
+label-visible = %name%
 label-visible-foreground = ${self.label-focused-foreground}
 label-visible-background = ${self.label-focused-background}
 label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
 ; urgent = Workspace with urgency hint set
-label-urgent = %index%
+label-urgent = %name%
 label-urgent-background = ${colors.alert}
 label-urgent-padding = 1
 
@@ -118,7 +118,7 @@ format-prefix = " "
 format-prefix-foreground = ${colors.text}
 format-prefix-underline = #7650f2
 
-label-layout = %layout%
+label-layout = %name%
 label-layout-underline = ${self.format-prefix-underline}
 
 label-indicator-padding = 2
@@ -167,7 +167,7 @@ label = %percentage_used:2%%
 
 [module/wlan]
 type = internal/network
-interface = wlp2s0
+interface = wlp9s0
 interval = 5
 
 format-connected-prefix = "直 "
@@ -179,7 +179,7 @@ format-disconnected =
 
 [module/eth]
 type = internal/network
-interface = enp1s0f1
+interface = enp0s31f6
 interval = 5
 
 format-connected-underline = #50f2d7
@@ -225,8 +225,8 @@ ramp-volume-2-foreground= #ff5555
 
 [module/battery]
 type = internal/battery
-battery = BAT1
-adapter = ACAD
+battery = BAT0
+adapter = AC
 full-at = 99
 
 format-charging = <animation-charging> <label-charging>

@@ -1,6 +1,5 @@
 configuration {
     modi: "ssh,drun,run,window";
-    theme: "custom-orange";
     terminal: "xterm";
     kb-move-word-back: "Alt+b,Shift+Left";
     kb-move-word-forward: "Alt+f,Shift+Right";
@@ -9,3 +8,5 @@ configuration {
     parse-known-hosts: false;
     show-icons: true;
 }
+
+@theme "custom-orange"

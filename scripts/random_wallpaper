@@ -1,31 +1,61 @@
 #!/usr/bin/env python3
 
+import colorsys
 import os
 import random
 import sys
 import time
 
-from colour import Color
+
+def RGBHex(rgb):
+    rgb = list(map(int, rgb))
+    return "#" + ''.join(hex(x).split('x')[-1].rjust(2, '0') for x in rgb)
 
 
-def RGBHex(RGB):
-    return "#" + ''.join(hex(x).split('x')[-1].rjust(2, '0') for x in RGB)
+def rng_colour():
+    return [random.randint(0, 255) for i in range(3)]
 
 
-delay = 1 if len(sys.argv) == 1 else int(sys.argv[1])/1000.0
+def hls_to_hsl(h, sl, ls):
+    return (h, ls, sl)
 
 
-cur = [random.randint(0, 255) for x in range(3)]
-cur_col = Color(RGBHex(cur))
+def color_scale(begin_hsl, end_hsl, nb):
+    if nb < 0:
+        raise ValueError(
+            "Unsupported negative number of colors (nb=%r)." % nb)
+
+    step = tuple([float(end_hsl[i] - begin_hsl[i]) / nb for i in range(0, 3)]) if nb > 0 else (0, 0, 0)
+
+    def mul(step, value):
+        return tuple([v * value for v in step])
+
+    def add_v(step, step2):
+        return tuple([v + step2[i] for i, v in enumerate(step)])
+
+    return [add_v(begin_hsl, mul(step, r)) for r in range(0, nb + 1)]
 
 
-while True:
-    nex = [random.randint(0, 255) for x in range(3)]
-    nex_col = Color(RGBHex(nex))
-    num_iter = sum(abs(nex[x]-cur[x]) for x in range(3)) // random.randint(1, 4)
-    run = list(cur_col.range_to(nex_col, num_iter))
-    for x in map(str, run):
-        os.system('hsetroot -solid "{}"'.format(x))
-        print('Current colour: {}'.format(x), file=sys.stderr)
-        time.sleep(delay)
-    cur, cur_col = nex, nex_col
+def main():
+    delay = 1 if len(sys.argv) == 1 else int(sys.argv[1]) / 1000.0
+
+    cur_col = rng_colour()
+
+    while True:
+        nxt_col = rng_colour()
+        num_iter = sum(abs(nxt_col[x]-cur_col[x]) for x in range(3)) // random.randint(1, 4)
+
+        for col in color_scale(
+                hls_to_hsl(*colorsys.rgb_to_hls(*cur_col)),
+                hls_to_hsl(*colorsys.rgb_to_hls(*nxt_col)),
+                num_iter - 1,
+        ):
+            col = RGBHex(colorsys.hls_to_rgb(*hls_to_hsl(*col)))
+            os.system('hsetroot -solid "{}"'.format(col))
+            print('Current colour: {}'.format(col), file=sys.stderr)
+            time.sleep(delay)
+        cur_col = nxt_col
+
+
+if __name__ == '__main__':
+    main()

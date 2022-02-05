@@ -5,7 +5,7 @@
    urgentcolor:      #fc3f3f;
 
    fgwhite:          #cfcfcf;
-   blackdarkest:     #111;
+   blackdarkest:     #222;
    blackwidget:      #222;
    blackentry:       #222;
    blackselect:      #555;
@@ -138,4 +138,9 @@ case-indicator {
    padding:6px 10px;
    text-color:@maincolor;
    background-color:@blackwidget;
+}
+
+element-text {
+    background-color: inherit;
+    text-color: inherit;
 }

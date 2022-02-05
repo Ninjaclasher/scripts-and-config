@@ -18,6 +18,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'lervag/vimtex', {'for': 'tex'}
 ", 'commit': '7c886a0731f1aa283899575615b75192ec3632b7'}
 Plug 'chaoren/vim-wordmotion'
+Plug 'farmergreg/vim-lastplace'
 call plug#end()
 
 map         <C-Right>       :tabn<Cr>
@@ -57,6 +58,9 @@ map         <F11>           <Esc>:-tab split<Cr>:te compile % %:r.in %:r.out %:r
 map!        <F11>           <Esc>:-tab split<Cr>:te compile % %:r.in %:r.out %:r.err<Cr>i
 map         <F10>           <Esc>:-tab split<Cr>:te compile %<Cr>i
 map!        <F10>           <Esc>:-tab split<Cr>:te compile %<Cr>i
+
+map         <F9>            <Esc>:hardcopy > %:r.ps<Cr>:!ps2pdf %:r.ps<Cr>
+map!        <F9>            <Esc>:hardcopy > %:r.ps<Cr>:!ps2pdf %:r.ps<Cr>i
 
 map         <F8>            :set number<Cr>:set relativenumber<Cr>
 map!        <F8>            <C-o>:set number<Cr><C-o>:set relativenumber<Cr>
