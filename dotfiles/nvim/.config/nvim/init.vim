@@ -59,8 +59,8 @@ map!        <F11>           <Esc>:-tab split<Cr>:te compile % %:r.in %:r.out %:r
 map         <F10>           <Esc>:-tab split<Cr>:te compile %<Cr>i
 map!        <F10>           <Esc>:-tab split<Cr>:te compile %<Cr>i
 
-map         <F9>            <Esc>:hardcopy > %:r.ps<Cr>:!ps2pdf %:r.ps<Cr>
-map!        <F9>            <Esc>:hardcopy > %:r.ps<Cr>:!ps2pdf %:r.ps<Cr>i
+"map         <F9>            <Esc>:hardcopy > %:r.ps<Cr>:!ps2pdf %:r.ps<Cr>
+"map!        <F9>            <Esc>:hardcopy > %:r.ps<Cr>:!ps2pdf %:r.ps<Cr>i
 
 map         <F8>            :set number<Cr>:set relativenumber<Cr>
 map!        <F8>            <C-o>:set number<Cr><C-o>:set relativenumber<Cr>
@@ -80,7 +80,7 @@ set         nomodeline
 set         background=light
 set         undofile
 "set        number
-"set        mouse=a
+set         mouse=
 au          FocusGained,BufEnter * :checktime
 
 au          Filetype tex let b:AutoPairs = AutoPairsDefine({'$': '$', '$$': '$$'})
@@ -100,6 +100,6 @@ let b:tex_stylish=1
 let g:vimtex_quickfix_open_on_warning=0
 let g:vimtex_quickfix_mode=0
 let g:vimtex_view_general_viewer='zathura'
-let g:vimtex_syntax_autoload_packages=['amsmath','tikz']
+let g:vimtex_syntax_packages={'amsmath': {'load': 2}, 'tikz': {'load': 2}}
 
 hi QuickFixLine guibg=Black

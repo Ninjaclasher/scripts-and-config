@@ -36,7 +36,7 @@ mouse_warping none
 
 set $alt                            Mod1
 set $win                            Mod4
-set $term                           xterm
+set $term                           alacritty
 set $script_dir                     $HOME/.local/bin/
 
 #####################
@@ -77,19 +77,19 @@ bindsym $alt+r                      mode "resize"
 floating_modifier $alt
 
 ## kill focused window ##
-bindsym Ctrl+Mod1+$win+q            kill
+bindsym Ctrl+$alt+$win+q            kill
 
 ## change focus ##
-bindsym Mod1+$win+Left              focus left
-bindsym Mod1+$win+Down              focus down
-bindsym Mod1+$win+Up                focus up
-bindsym Mod1+$win+Right             focus right
+bindsym $alt+$win+Left              focus left
+bindsym $alt+$win+Down              focus down
+bindsym $alt+$win+Up                focus up
+bindsym $alt+$win+Right             focus right
 
 ## move focused window ##
-bindsym Ctrl+Mod1+$win+Left         move left
-bindsym Ctrl+Mod1+$win+Down         move down
-bindsym Ctrl+Mod1+$win+Up           move up
-bindsym Ctrl+Mod1+$win+Right        move right
+bindsym Ctrl+$alt+$win+Left         move left
+bindsym Ctrl+$alt+$win+Down         move down
+bindsym Ctrl+$alt+$win+Up           move up
+bindsym Ctrl+$alt+$win+Right        move right
 
 ## split in horizontal orientation ##
 bindsym $alt+h                      split h
@@ -112,7 +112,7 @@ bindsym $alt+m                      move workspace to output left
 bindsym $alt+space                  floating toggle
 
 ## change focus between tiling / floating windows ##
-bindsym Mod1+$win+space             focus mode_toggle
+bindsym $alt+$win+space             focus mode_toggle
 
 ## focus containers ##
 bindsym $alt+a                      focus parent
@@ -123,10 +123,10 @@ bindsym $alt+minus                  move scratchpad
 bindsym $alt+plus                   scratchpad show
 
 ## resize windows ##
-bindsym Mod1+$win+Shift+Left        resize shrink width 10 px or 10 ppt
-bindsym Mod1+$win+Shift+Down        resize grow height 10 px or 10 ppt
-bindsym Mod1+$win+Shift+Up          resize shrink height 10 px or 10 ppt
-bindsym Mod1+$win+Shift+Right       resize grow width 10 px or 10 ppt
+bindsym $alt+$win+Shift+Left        resize shrink width 10 px or 10 ppt
+bindsym $alt+$win+Shift+Down        resize grow height 10 px or 10 ppt
+bindsym $alt+$win+Shift+Up          resize shrink height 10 px or 10 ppt
+bindsym $alt+$win+Shift+Right       resize grow width 10 px or 10 ppt
 
 
 ##########################
@@ -156,51 +156,52 @@ set $ws19                           "19"
 set $ws20                           "20"
 
 # switch to workspace ##
-bindsym $alt+Ctrl+grave             exec sh $script_dir/next_workspace
-bindsym $alt+Ctrl+1                 workspace $ws1
-bindsym $alt+Ctrl+2                 workspace $ws2
-bindsym $alt+Ctrl+3                 workspace $ws3
-bindsym $alt+Ctrl+4                 workspace $ws4
-bindsym $alt+Ctrl+5                 workspace $ws5
-bindsym $alt+Ctrl+6                 workspace $ws6
-bindsym $alt+Ctrl+7                 workspace $ws7
-bindsym $alt+Ctrl+8                 workspace $ws8
-bindsym $alt+Ctrl+9                 workspace $ws9
-bindsym $alt+Ctrl+0                 workspace $ws10
-bindsym $alt+Ctrl+Shift+1           workspace $ws11
-bindsym $alt+Ctrl+Shift+2           workspace $ws12
-bindsym $alt+Ctrl+Shift+3           workspace $ws13
-bindsym $alt+Ctrl+Shift+4           workspace $ws14
-bindsym $alt+Ctrl+Shift+5           workspace $ws15
-bindsym $alt+Ctrl+Shift+6           workspace $ws16
-bindsym $alt+Ctrl+Shift+7           workspace $ws17
-bindsym $alt+Ctrl+Shift+8           workspace $ws18
-bindsym $alt+Ctrl+Shift+9           workspace $ws19
-bindsym $alt+Ctrl+Shift+0           workspace $ws20
+bindsym $alt+Ctrl+grave             exec --no-startup-id $script_dir/goto_next_workspace
+bindsym Ctrl+$alt+1                 workspace $ws1
+bindsym Ctrl+$alt+2                 workspace $ws2
+bindsym Ctrl+$alt+3                 workspace $ws3
+bindsym Ctrl+$alt+4                 workspace $ws4
+bindsym Ctrl+$alt+5                 workspace $ws5
+bindsym Ctrl+$alt+6                 workspace $ws6
+bindsym Ctrl+$alt+7                 workspace $ws7
+bindsym Ctrl+$alt+8                 workspace $ws8
+bindsym Ctrl+$alt+9                 workspace $ws9
+bindsym Ctrl+$alt+0                 workspace $ws10
+bindsym Ctrl+$alt+Shift+1           workspace $ws11
+bindsym Ctrl+$alt+Shift+2           workspace $ws12
+bindsym Ctrl+$alt+Shift+3           workspace $ws13
+bindsym Ctrl+$alt+Shift+4           workspace $ws14
+bindsym Ctrl+$alt+Shift+5           workspace $ws15
+bindsym Ctrl+$alt+Shift+6           workspace $ws16
+bindsym Ctrl+$alt+Shift+7           workspace $ws17
+bindsym Ctrl+$alt+Shift+8           workspace $ws18
+bindsym Ctrl+$alt+Shift+9           workspace $ws19
+bindsym Ctrl+$alt+Shift+0           workspace $ws20
 bindsym $alt+Tab                    workspace next_on_output
 bindsym $alt+Shift+Tab              workspace prev_on_output
 
 ## move focused container to workspace ##
-bindsym Ctrl+Mod1+$win+1            move container to workspace $ws1
-bindsym Ctrl+Mod1+$win+2            move container to workspace $ws2
-bindsym Ctrl+Mod1+$win+3            move container to workspace $ws3
-bindsym Ctrl+Mod1+$win+4            move container to workspace $ws4
-bindsym Ctrl+Mod1+$win+5            move container to workspace $ws5
-bindsym Ctrl+Mod1+$win+6            move container to workspace $ws6
-bindsym Ctrl+Mod1+$win+7            move container to workspace $ws7
-bindsym Ctrl+Mod1+$win+8            move container to workspace $ws8
-bindsym Ctrl+Mod1+$win+9            move container to workspace $ws9
-bindsym Ctrl+Mod1+$win+0            move container to workspace $ws10
-bindsym Ctrl+Mod1+$win+Shift+1      move container to workspace $ws11
-bindsym Ctrl+Mod1+$win+Shift+2      move container to workspace $ws12
-bindsym Ctrl+Mod1+$win+Shift+3      move container to workspace $ws13
-bindsym Ctrl+Mod1+$win+Shift+4      move container to workspace $ws14
-bindsym Ctrl+Mod1+$win+Shift+5      move container to workspace $ws15
-bindsym Ctrl+Mod1+$win+Shift+6      move container to workspace $ws16
-bindsym Ctrl+Mod1+$win+Shift+7      move container to workspace $ws17
-bindsym Ctrl+Mod1+$win+Shift+8      move container to workspace $ws18
-bindsym Ctrl+Mod1+$win+Shift+9      move container to workspace $ws19
-bindsym Ctrl+Mod1+$win+Shift+0      move container to workspace $ws20
+bindsym Ctrl+$alt+$win+grave        exec --no-startup-id $script_dir/move_next_workspace
+bindsym Ctrl+$alt+$win+1            move container to workspace $ws1
+bindsym Ctrl+$alt+$win+2            move container to workspace $ws2
+bindsym Ctrl+$alt+$win+3            move container to workspace $ws3
+bindsym Ctrl+$alt+$win+4            move container to workspace $ws4
+bindsym Ctrl+$alt+$win+5            move container to workspace $ws5
+bindsym Ctrl+$alt+$win+6            move container to workspace $ws6
+bindsym Ctrl+$alt+$win+7            move container to workspace $ws7
+bindsym Ctrl+$alt+$win+8            move container to workspace $ws8
+bindsym Ctrl+$alt+$win+9            move container to workspace $ws9
+bindsym Ctrl+$alt+$win+0            move container to workspace $ws10
+bindsym Ctrl+$alt+$win+Shift+1      move container to workspace $ws11
+bindsym Ctrl+$alt+$win+Shift+2      move container to workspace $ws12
+bindsym Ctrl+$alt+$win+Shift+3      move container to workspace $ws13
+bindsym Ctrl+$alt+$win+Shift+4      move container to workspace $ws14
+bindsym Ctrl+$alt+$win+Shift+5      move container to workspace $ws15
+bindsym Ctrl+$alt+$win+Shift+6      move container to workspace $ws16
+bindsym Ctrl+$alt+$win+Shift+7      move container to workspace $ws17
+bindsym Ctrl+$alt+$win+Shift+8      move container to workspace $ws18
+bindsym Ctrl+$alt+$win+Shift+9      move container to workspace $ws19
+bindsym Ctrl+$alt+$win+Shift+0      move container to workspace $ws20
 
 ###########################
 #### Status bar Config ####
@@ -223,8 +224,11 @@ bindsym Ctrl+Mod1+$win+Shift+0      move container to workspace $ws20
 #}
 
 exec_always --no-startup-id $script_dir/clipboard_manager
-exec_always --no-startup-id autorandr --default default -c --cycle --force
-exec_always --no-startup-id blueman-applet
+exec_always --no-startup-id autorandr --default default -c --force
+exec --no-startup-id blueman-applet
+exec --no-startup-id solaar --window hide
+exec --no-startup-id xgamma -gamma 0.9
+exec --no-startup-id pactl -- set-source-mute @DEFAULT_SOURCE@ on
 
 client.focused                      #f79c6f #f28f5e #000000
 client.unfocused                    #353535 #2e2e2e #ffffff
@@ -235,6 +239,8 @@ client.unfocused                    #353535 #2e2e2e #ffffff
 
 ## Run Program ##
 bindsym $alt+Shift+i                exec --no-startup-id rofi -show drun
+bindsym $alt+Shift+space            exec --no-startup-id $script_dir/auth_rofi
+bindsym $alt+$win+Shift+space       exec --no-startup-id FIELD=totp $script_dir/auth_rofi
 
 ## reload the configuration file ##
 bindsym $alt+Shift+c                reload
@@ -260,16 +266,16 @@ bindsym $alt+Ctrl+Up                exec --no-startup-id pactl -- set-sink-volum
 bindsym $alt+Ctrl+Down              exec --no-startup-id pactl -- set-sink-volume @DEFAULT_SINK@ -2%
 
 ## Run User Programs ##
-bindsym --release $alt+Ctrl+e       exec --no-startup-id "notify-send \\"$(colorpicker --one-shot --short)\\""
+bindsym --release $alt+Ctrl+e       exec --no-startup-id "notify-send \\"$(xcolor)\\""
 bindsym $alt+Ctrl+x                 exec --no-startup-id xournalpp
 bindsym $alt+Ctrl+l                 exec --no-startup-id thunar
-bindsym $alt+Ctrl+i                 exec --no-startup-id chromium --incognito
+bindsym $alt+Ctrl+i                 exec --no-startup-id chromium
 bindsym $alt+Ctrl+t                 exec --no-startup-id $term
-bindsym $alt+Ctrl+n                 exec --no-startup-id sublime-text
-bindsym $alt+Ctrl+p                 exec --no-startup-id $term -e python3 -q
-bindsym $alt+Ctrl+equal             exec --no-startup-id "$term -fs 11 -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
-bindsym XF86Calculator              exec --no-startup-id "$term -fs 11 -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
-bindsym $alt+Ctrl+minus             exec --no-startup-id $term -fs 11 -e isympy
+bindsym $alt+Ctrl+n                 exec --no-startup-id subl
+bindsym $alt+Ctrl+p                 exec --no-startup-id $term -t python3 -e python3 -q
+bindsym $alt+Ctrl+equal             exec --no-startup-id "$term -o font.size=11 -t Calculator -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
+bindsym XF86Calculator              exec --no-startup-id "$term -o font.size=11 -t Calculator -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
+bindsym $alt+Ctrl+minus             exec --no-startup-id $term -o font.size=11 -e isympy
 
 ## Set keyboard layout ##
 bindsym $alt+Ctrl+h                 exec --no-startup-id setxkbmap us
@@ -285,16 +291,17 @@ for_window [class="Chromium"]       border none
 for_window [class="discord"]        border none
 for_window [class="Firefox"]        border none
 for_window [class="Slack"]          border none
+for_window [class="Signal"]         border none
 for_window [class="Subl"]           border none
-for_window [class="Thunderbird"]    border none
+for_window [class="thunderbird"]    border none
 
 ## Assign Programs ##
 assign [class="Abeluna"]            $ws7
-assign [class="Thunderbird"]        $ws8
-assign [class="Slack"]              $ws9
+assign [class="thunderbird"]        $ws8
+assign [class="Signal"]             $ws9
 assign [class="discord"]            $ws10
 
-## Background Commands ##
+## Wallpaper Commands ##
 bindsym $win+Shift+u                exec --no-startup-id $script_dir/load_wallpaper "1"
 bindsym $win+Shift+w                exec --no-startup-id $script_dir/load_wallpaper "2"
 bindsym $win+Shift+g                exec --no-startup-id $script_dir/load_wallpaper "3"
