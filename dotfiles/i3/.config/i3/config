@@ -63,11 +63,48 @@ mode "resize"
     bindsym $alt+r                  mode "default"
 }
 
+####################
+#### Mouse Mode ####
+####################
+
+mode "mouse"
+{
+    ## Move mouse with keyboard ##
+    set $pos_s                      5
+    set $pos_n                      25
+    set $pos_f                      100
+
+    bindsym $win+Down               exec --no-startup-id "xdotool mousemove_relative 0 $pos_n, xdotool selectwindow"
+    bindsym $win+Up                 exec --no-startup-id "xdotool mousemove_relative -- 0 -$pos_n, xdotool selectwindow"
+    bindsym $win+Right              exec --no-startup-id "xdotool mousemove_relative $pos_n 0, xdotool selectwindow"
+    bindsym $win+Left               exec --no-startup-id "xdotool mousemove_relative -- -$pos_n 0, xdotool selectwindow"
+
+    bindsym $win+Return             exec --no-startup-id xdotool click 1
+    bindsym $win+Shift+Return       exec --no-startup-id xdotool click 2
+    bindsym $win+Ctrl+Return        exec --no-startup-id xdotool click 3
+
+    bindsym $win+Shift+Down         exec --no-startup-id "xdotool mousemove_relative 0 $pos_s, xdotool selectwindow"
+    bindsym $win+Shift+Up           exec --no-startup-id "xdotool mousemove_relative -- 0 -$pos_s, xdotool selectwindow"
+    bindsym $win+Shift+Right        exec --no-startup-id "xdotool mousemove_relative $pos_s 0, xdotool selectwindow"
+    bindsym $win+Shift+Left         exec --no-startup-id "xdotool mousemove_relative -- -$pos_s 0, xdotool selectwindow"
+
+    bindsym $win+Ctrl+Down          exec --no-startup-id "xdotool mousemove_relative 0 $pos_f, xdotool selectwindow"
+    bindsym $win+Ctrl+Up            exec --no-startup-id "xdotool mousemove_relative -- 0 -$pos_f, xdotool selectwindow"
+    bindsym $win+Ctrl+Right         exec --no-startup-id "xdotool mousemove_relative $pos_f 0, xdotool selectwindow"
+    bindsym $win+Ctrl+Left          exec --no-startup-id "xdotool mousemove_relative -- -$pos_f 0, xdotool selectwindow"
+
+    ## back to normal: Enter or Escape or $alt+k ##
+    bindsym Return                  mode "default"
+    bindsym Escape                  mode "default"
+    bindsym $alt+k                  mode "default"
+}
+
 #######################
 ### Mode Activation ###
 #######################
 
 bindsym $alt+r                      mode "resize"
+bindsym $alt+k                      mode "mouse"
 
 #######################
 #### Window Config ####
@@ -77,131 +114,143 @@ bindsym $alt+r                      mode "resize"
 floating_modifier $alt
 
 ## kill focused window ##
-bindsym Ctrl+$alt+$win+q            kill
+bindsym Ctrl+$alt+$win+q       kill
 
 ## change focus ##
-bindsym $alt+$win+Left              focus left
-bindsym $alt+$win+Down              focus down
-bindsym $alt+$win+Up                focus up
-bindsym $alt+$win+Right             focus right
+bindsym $win+Left              focus left
+bindsym $win+Down              focus down
+bindsym $win+Up                focus up
+bindsym $win+Right             focus right
+bindsym $win+h                 focus left
+bindsym $win+j                 focus down
+bindsym $win+k                 focus up
+bindsym $win+l                 focus right
 
 ## move focused window ##
-bindsym Ctrl+$alt+$win+Left         move left
-bindsym Ctrl+$alt+$win+Down         move down
-bindsym Ctrl+$alt+$win+Up           move up
-bindsym Ctrl+$alt+$win+Right        move right
-
-## split in horizontal orientation ##
-bindsym $alt+h                      split h
-
-## split in vertical orientation ##
-bindsym $alt+v                      split v
-
-## enter fullscreen mode for the focused container ##
-bindsym $alt+f                      fullscreen toggle
-
-## change container layout (stacked, tabbed, toggle split) ##
-bindsym $alt+s                      layout stacking
-bindsym $alt+w                      layout tabbed
-bindsym $alt+e                      layout toggle split
-
-## move workspace to screen ##
-bindsym $alt+m                      move workspace to output left
-
-## toggle tiling / floating ##
-bindsym $alt+space                  floating toggle
-
-## change focus between tiling / floating windows ##
-bindsym $alt+$win+space             focus mode_toggle
-
-## focus containers ##
-bindsym $alt+a                      focus parent
-bindsym $alt+d                      focus child
-
-## show/hide scratchpad ##
-bindsym $alt+minus                  move scratchpad
-bindsym $alt+plus                   scratchpad show
+bindsym Ctrl+$win+Left         move left
+bindsym Ctrl+$win+Down         move down
+bindsym Ctrl+$win+Up           move up
+bindsym Ctrl+$win+Right        move right
+bindsym Ctrl+$win+h            move left
+bindsym Ctrl+$win+j            move down
+bindsym Ctrl+$win+k            move up
+bindsym Ctrl+$win+l            move right
 
 ## resize windows ##
-bindsym $alt+$win+Shift+Left        resize shrink width 10 px or 10 ppt
-bindsym $alt+$win+Shift+Down        resize grow height 10 px or 10 ppt
-bindsym $alt+$win+Shift+Up          resize shrink height 10 px or 10 ppt
-bindsym $alt+$win+Shift+Right       resize grow width 10 px or 10 ppt
+bindsym $alt+$win+Left         resize shrink width 10 px or 10 ppt
+bindsym $alt+$win+Down         resize grow height 10 px or 10 ppt
+bindsym $alt+$win+Up           resize shrink height 10 px or 10 ppt
+bindsym $alt+$win+Right        resize grow width 10 px or 10 ppt
+bindsym $alt+$win+h            resize shrink width 10 px or 10 ppt
+bindsym $alt+$win+j            resize grow height 10 px or 10 ppt
+bindsym $alt+$win+k            resize shrink height 10 px or 10 ppt
+bindsym $alt+$win+l            resize grow width 10 px or 10 ppt
 
+## split in horizontal orientation ##
+bindsym $alt+h                 split h
+
+## split in vertical orientation ##
+bindsym $alt+v                 split v
+
+## enter fullscreen mode for the focused container ##
+bindsym $alt+f                 fullscreen toggle
+
+## change container layout (stacked, tabbed, toggle split) ##
+bindsym $alt+s                 layout stacking
+bindsym $alt+w                 layout tabbed
+bindsym $alt+e                 layout toggle split
+
+## move workspace to screen ##
+bindsym $alt+m                 move workspace to output left
+bindsym $alt+n                 move workspace to output up
+
+## toggle tiling / floating ##
+bindsym $alt+space             floating toggle
+
+## change focus between tiling / floating windows ##
+bindsym $alt+$win+space        focus mode_toggle
+
+## focus containers ##
+bindsym $alt+a                 focus parent
+bindsym $alt+d                 focus child
+
+## show/hide scratchpad ##
+bindsym $alt+minus             move scratchpad
+bindsym $alt+plus              scratchpad show
 
 ##########################
 #### Workspace Config ####
 ##########################
 
 ## Define names for default workspaces for which we configure key bindings later on. We use variables to avoid repeating the names in multiple places. ##
-set $ws1                            "1"
-set $ws2                            "2"
-set $ws3                            "3"
-set $ws4                            "4"
-set $ws5                            "5"
-set $ws6                            "6"
-set $ws7                            "7"
-set $ws8                            "8"
-set $ws9                            "9"
-set $ws10                           "10"
-set $ws11                           "11"
-set $ws12                           "12"
-set $ws13                           "13"
-set $ws14                           "14"
-set $ws15                           "15"
-set $ws16                           "16"
-set $ws17                           "17"
-set $ws18                           "18"
-set $ws19                           "19"
-set $ws20                           "20"
+set $ws1                       "1"
+set $ws2                       "2"
+set $ws3                       "3"
+set $ws4                       "4"
+set $ws5                       "5"
+set $ws6                       "6"
+set $ws7                       "7"
+set $ws8                       "8"
+set $ws9                       "9"
+set $ws10                      "10"
+set $ws11                      "11"
+set $ws12                      "12"
+set $ws13                      "13"
+set $ws14                      "14"
+set $ws15                      "15"
+set $ws16                      "16"
+set $ws17                      "17"
+set $ws18                      "18"
+set $ws19                      "19"
+set $ws20                      "20"
 
 # switch to workspace ##
-bindsym $alt+Ctrl+grave             exec --no-startup-id $script_dir/goto_next_workspace
-bindsym Ctrl+$alt+1                 workspace $ws1
-bindsym Ctrl+$alt+2                 workspace $ws2
-bindsym Ctrl+$alt+3                 workspace $ws3
-bindsym Ctrl+$alt+4                 workspace $ws4
-bindsym Ctrl+$alt+5                 workspace $ws5
-bindsym Ctrl+$alt+6                 workspace $ws6
-bindsym Ctrl+$alt+7                 workspace $ws7
-bindsym Ctrl+$alt+8                 workspace $ws8
-bindsym Ctrl+$alt+9                 workspace $ws9
-bindsym Ctrl+$alt+0                 workspace $ws10
-bindsym Ctrl+$alt+Shift+1           workspace $ws11
-bindsym Ctrl+$alt+Shift+2           workspace $ws12
-bindsym Ctrl+$alt+Shift+3           workspace $ws13
-bindsym Ctrl+$alt+Shift+4           workspace $ws14
-bindsym Ctrl+$alt+Shift+5           workspace $ws15
-bindsym Ctrl+$alt+Shift+6           workspace $ws16
-bindsym Ctrl+$alt+Shift+7           workspace $ws17
-bindsym Ctrl+$alt+Shift+8           workspace $ws18
-bindsym Ctrl+$alt+Shift+9           workspace $ws19
-bindsym Ctrl+$alt+Shift+0           workspace $ws20
-bindsym $alt+Tab                    workspace next_on_output
-bindsym $alt+Shift+Tab              workspace prev_on_output
+bindsym $win+grave             exec --no-startup-id $script_dir/goto_next_workspace
+bindsym $win+1                 workspace $ws1
+bindsym $win+2                 workspace $ws2
+bindsym $win+3                 workspace $ws3
+bindsym $win+4                 workspace $ws4
+bindsym $win+5                 workspace $ws5
+bindsym $win+6                 workspace $ws6
+bindsym $win+7                 workspace $ws7
+bindsym $win+8                 workspace $ws8
+bindsym $win+9                 workspace $ws9
+bindsym $win+0                 workspace $ws10
+bindsym $win+Shift+1           workspace $ws11
+bindsym $win+Shift+2           workspace $ws12
+bindsym $win+Shift+3           workspace $ws13
+bindsym $win+Shift+4           workspace $ws14
+bindsym $win+Shift+5           workspace $ws15
+bindsym $win+Shift+6           workspace $ws16
+bindsym $win+Shift+7           workspace $ws17
+bindsym $win+Shift+8           workspace $ws18
+bindsym $win+Shift+9           workspace $ws19
+bindsym $win+Shift+0           workspace $ws20
+bindsym $win+Tab               workspace next_on_output
+bindsym $win+Shift+Tab         workspace prev_on_output
 
 ## move focused container to workspace ##
-bindsym Ctrl+$alt+$win+grave        exec --no-startup-id $script_dir/move_next_workspace
-bindsym Ctrl+$alt+$win+1            move container to workspace $ws1
-bindsym Ctrl+$alt+$win+2            move container to workspace $ws2
-bindsym Ctrl+$alt+$win+3            move container to workspace $ws3
-bindsym Ctrl+$alt+$win+4            move container to workspace $ws4
-bindsym Ctrl+$alt+$win+5            move container to workspace $ws5
-bindsym Ctrl+$alt+$win+6            move container to workspace $ws6
-bindsym Ctrl+$alt+$win+7            move container to workspace $ws7
-bindsym Ctrl+$alt+$win+8            move container to workspace $ws8
-bindsym Ctrl+$alt+$win+9            move container to workspace $ws9
-bindsym Ctrl+$alt+$win+0            move container to workspace $ws10
-bindsym Ctrl+$alt+$win+Shift+1      move container to workspace $ws11
-bindsym Ctrl+$alt+$win+Shift+2      move container to workspace $ws12
-bindsym Ctrl+$alt+$win+Shift+3      move container to workspace $ws13
-bindsym Ctrl+$alt+$win+Shift+4      move container to workspace $ws14
-bindsym Ctrl+$alt+$win+Shift+5      move container to workspace $ws15
-bindsym Ctrl+$alt+$win+Shift+6      move container to workspace $ws16
-bindsym Ctrl+$alt+$win+Shift+7      move container to workspace $ws17
-bindsym Ctrl+$alt+$win+Shift+8      move container to workspace $ws18
-bindsym Ctrl+$alt+$win+Shift+9      move container to workspace $ws19
-bindsym Ctrl+$alt+$win+Shift+0      move container to workspace $ws20
+bindsym Ctrl+$win+grave        exec --no-startup-id $script_dir/move_next_workspace
+bindsym Ctrl+$win+1            move container to workspace $ws1
+bindsym Ctrl+$win+2            move container to workspace $ws2
+bindsym Ctrl+$win+3            move container to workspace $ws3
+bindsym Ctrl+$win+4            move container to workspace $ws4
+bindsym Ctrl+$win+5            move container to workspace $ws5
+bindsym Ctrl+$win+6            move container to workspace $ws6
+bindsym Ctrl+$win+7            move container to workspace $ws7
+bindsym Ctrl+$win+8            move container to workspace $ws8
+bindsym Ctrl+$win+9            move container to workspace $ws9
+bindsym Ctrl+$win+0            move container to workspace $ws10
+bindsym Ctrl+$win+Shift+1      move container to workspace $ws11
+bindsym Ctrl+$win+Shift+2      move container to workspace $ws12
+bindsym Ctrl+$win+Shift+3      move container to workspace $ws13
+bindsym Ctrl+$win+Shift+4      move container to workspace $ws14
+bindsym Ctrl+$win+Shift+5      move container to workspace $ws15
+bindsym Ctrl+$win+Shift+6      move container to workspace $ws16
+bindsym Ctrl+$win+Shift+7      move container to workspace $ws17
+bindsym Ctrl+$win+Shift+8      move container to workspace $ws18
+bindsym Ctrl+$win+Shift+9      move container to workspace $ws19
+bindsym Ctrl+$win+Shift+0      move container to workspace $ws20
 
 ###########################
 #### Status bar Config ####
@@ -271,7 +320,6 @@ bindsym $alt+Ctrl+x                 exec --no-startup-id xournalpp
 bindsym $alt+Ctrl+l                 exec --no-startup-id thunar
 bindsym $alt+Ctrl+i                 exec --no-startup-id chromium
 bindsym $alt+Ctrl+t                 exec --no-startup-id $term
-bindsym $alt+Ctrl+n                 exec --no-startup-id subl
 bindsym $alt+Ctrl+p                 exec --no-startup-id $term -t python3 -e python3 -q
 bindsym $alt+Ctrl+equal             exec --no-startup-id "$term -o font.size=11 -t Calculator -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
 bindsym XF86Calculator              exec --no-startup-id "$term -o font.size=11 -t Calculator -e python3 -q -i -c \\"import sys; import math; sys.ps1='[calculator $] '\\""
@@ -289,7 +337,7 @@ bindsym --release $win+Shift+Print  exec --no-startup-id flameshot screen
 ## Remove Borders ##
 for_window [class="Chromium"]       border none
 for_window [class="discord"]        border none
-for_window [class="Firefox"]        border none
+for_window [class="firefox"]        border none
 for_window [class="Slack"]          border none
 for_window [class="Signal"]         border none
 for_window [class="Subl"]           border none
@@ -308,29 +356,3 @@ bindsym $win+Shift+g                exec --no-startup-id $script_dir/load_wallpa
 bindsym $win+Shift+n                exec --no-startup-id $script_dir/load_wallpaper "4"
 bindsym $win+Shift+r                exec --no-startup-id $script_dir/load_wallpaper "5"
 bindsym $win+Shift+c                exec --no-startup-id $script_dir/load_wallpaper "6"
-
-##################################
-#### Move mouse with keyboard ####
-##################################
-set $pos_s                          5
-set $pos_n                          25
-set $pos_f                          100
-
-bindsym $win+Down                   exec --no-startup-id "xdotool mousemove_relative 0 $pos_n, xdotool selectwindow"
-bindsym $win+Up                     exec --no-startup-id "xdotool mousemove_relative -- 0 -$pos_n, xdotool selectwindow"
-bindsym $win+Right                  exec --no-startup-id "xdotool mousemove_relative $pos_n 0, xdotool selectwindow"
-bindsym $win+Left                   exec --no-startup-id "xdotool mousemove_relative -- -$pos_n 0, xdotool selectwindow"
-
-bindsym $win+Return                 exec --no-startup-id xdotool click 1
-bindsym $win+Shift+Return           exec --no-startup-id xdotool click 2
-bindsym $win+Ctrl+Return            exec --no-startup-id xdotool click 3
-
-bindsym $win+Shift+Down             exec --no-startup-id "xdotool mousemove_relative 0 $pos_s, xdotool selectwindow"
-bindsym $win+Shift+Up               exec --no-startup-id "xdotool mousemove_relative -- 0 -$pos_s, xdotool selectwindow"
-bindsym $win+Shift+Right            exec --no-startup-id "xdotool mousemove_relative $pos_s 0, xdotool selectwindow"
-bindsym $win+Shift+Left             exec --no-startup-id "xdotool mousemove_relative -- -$pos_s 0, xdotool selectwindow"
-
-bindsym $win+Ctrl+Down              exec --no-startup-id "xdotool mousemove_relative 0 $pos_f, xdotool selectwindow"
-bindsym $win+Ctrl+Up                exec --no-startup-id "xdotool mousemove_relative -- 0 -$pos_f, xdotool selectwindow"
-bindsym $win+Ctrl+Right             exec --no-startup-id "xdotool mousemove_relative $pos_f 0, xdotool selectwindow"
-bindsym $win+Ctrl+Left              exec --no-startup-id "xdotool mousemove_relative -- -$pos_f 0, xdotool selectwindow"
