@@ -7,7 +7,7 @@ WM_MSG=${WM_MSG:-i3-msg}
 
 WS_JSON=$($WM_MSG -t get_workspaces)
 for i in {1..20} ; do
-    if [[ ! $WS_JSON =~ \"num\":\ ?$i ]] ; then
+    if [[ ! $WS_JSON =~ \"num\":\ ?$i\ ?, ]] ; then
         $WM_MSG workspace number "$i"
         break
     fi
